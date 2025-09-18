@@ -1,0 +1,539 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+    <!-- Product Page -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <!-- Product Images -->
+            <div class="space-y-4">
+                <div class="flex flex-col h-full justify-between" style="min-height: 100%;">
+                    <div class="aspect-square bg-white rounded-lg overflow-hidden shadow-sm flex flex-col items-center flex-grow h-full w-full">
+                        {% with product.images.all|first as main_image %}
+                            {% if main_image %}
+                                <img id="mainProductImage" src="{{ main_image.image.url }}" alt="{{ product.name }}" class="object-cover w-full h-full">
+                            {% else %}
+                                <div class="w-full h-full flex items-center justify-center bg-gray-100 text-gray-400">No Image</div>
+                            {% endif %}
+                        {% endwith %}
+                    </div>
+                    <!-- Thumbnail Images -->
+                    <div class="flex space-x-2 overflow-x-auto mt-4 w-full justify-left">
+                        {% for image in product.images.all %}
+                            <button type="button" class="flex-shrink-0 w-20 h-full bg-white rounded-lg overflow-hidden border-2 focus:outline-none" onclick="setMainProductImage('{{ image.image.url }}')">
+                                <img src="{{ image.image.url }}" alt="Thumbnail" class="w-full h-full object-cover">
+                            </button>
+                        {% endfor %}
+                    </div>
+                </div>
+        <script>
+        function setMainProductImage(url) {
+            var mainImg = document.getElementById('mainProductImage');
+            if(mainImg) {
+                mainImg.src = url;
+            }
+        }
+        </script>
+            </div>
+
+            <!-- Product Details -->
+            <div class="space-y-6">
+                <!-- Stock Status -->
+               
+
+                <!-- Product Info -->
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-900 mb-2">{{ product.name }}</h1>
+                    <!-- <p class="text-gray-600 mb-4">{{ product.description }}</p> -->
+                    <!-- <p class="text-gray-600 mb-4">Vegan, Free of Talc, Free of Paraben, Hipoalergenic, Cruelty Free.</p> -->
+                    <!-- Features Section: no grid, minimal margin below -->
+                    <div class="text-left pl-2 mb-2">
+                        <h2 class="text-2xl font-bold text-gray-600 mb-2">Features</h2>
+                        <div class="flex flex-row flex-wrap gap-3">
+                            {% for feature in product.features.all %}
+                            <label class="flex items-center gap-2 px-3 py-2 rounded-lg bg-white  cursor-pointer transition hover:border-blue-400">
+                                <input type="checkbox" name="wishlist_features" value="{{ feature.id }}" data-name="{{ feature.name }}" class="accent-blue-600 w-5 h-5 rounded focus:ring-2 focus:ring-blue-200">
+                                <span class="text-sm font-medium text-gray-700">{{ feature.name }}</span>
+                            </label>
+                            {% endfor %}
+                        </div>
+                        {{ product.highlighted_features|safe }}
+                    </div>
+                </div>
+
+
+
+                <!-- Key Options: Min Order, Lead Time, Sample Available in a row; Certifications below -->
+               
+
+                <!-- Pricing -->
+                <div class="border-t py-0">
+                    <!-- <div class="flex items-baseline space-x-2">
+                        <span class="text-3xl font-bold text-gray-900">${{ product.price_per_unit }}</span>
+                        <span class="text-gray-500">per unit</span>
+                    </div>
+                    <p class="text-sm text-gray-600 mt-1">Bulk pricing available for larger quantities</p> -->
+                </div>
+
+
+                <!-- Color Options (from Customization color_images) -->
+                {% if product.category.customizations.first.color_images.all %}
+                <div>
+                    <h3 class="text-sm font-medium text-gray-900 mb-3">Available Shades:</h3>
+                    <div class="flex flex-wrap gap-2">
+                        {% for color in product.category.customizations.first.color_images.all %}
+                        <div class="">
+                        <label style="cursor:pointer;" class="flex flex-col items-center gap-1 relative">
+                            <input type="checkbox" name="wishlist_colors" value="{{ color.id }}" data-name="{{ color.name }}" {% if color.image %}data-image="{{ color.image.url }}"{% endif %} class="peer" hidden required>
+                            <span class="w-full h-full flex items-center justify-center overflow-hidden peer-checked:border-blue-800 relative" title="{{ color.name }}" style="position:relative;">
+                                {% if color.image %}
+                                        <img src="{{ color.image.url }}" alt="{{ color.name }}" class="object-cover w-full h-full rounded-full color-thumb" style="max-width:90px;max-height:90px;" onclick="showColorModal('{{ color.image.url }}', '{{ color.name }}')">
+                                {% else %}
+                                    <span class="w-full h-full flex items-center justify-center text-gray-400 bg-gray-100">No Image</span>
+                                {% endif %}
+                                <span class="checkmark-overlay" style="display:none; position:absolute; top:6px; right:6px; z-index:2; background:rgba(37,99,235,0.9); color:white; border-radius:50%; width:28px; height:28px; justify-content:center; align-items:center; font-size:1.2rem; box-shadow:0 2px 8px rgba(0,0,0,0.15);"><svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='white' width='20' height='20'><path fill-rule='evenodd' d='M16.707 5.293a1 1 0 010 1.414l-7.25 7.25a1 1 0 01-1.414 0l-3.25-3.25a1 1 0 111.414-1.414l2.543 2.543 6.543-6.543a1 1 0 011.414 0z' clip-rule='evenodd'/></svg></span>
+                            </span>
+                            <span class="text-xs text-center mt-1">{{ color.name }}</span>
+                        </label>
+                        </div>
+                        {% endfor %}
+                    {% endif %}
+                        <!-- Upload Custom Color Button -->
+                        <button type="button" id="uploadCustomColorBtn" class="flex items-center gap-2 px-4 py-2 mt-4 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700 transition-colors" style="height:50px;">
+                            <i class="fas fa-plus"></i>
+                            <!-- <span></span> -->
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Custom Color Modal -->
+                <div id="customColorModal" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.6);z-index:1100;align-items:center;justify-content:center;">
+                    <div style="background:white;padding:32px 24px;border-radius:16px;box-shadow:0 2px 16px rgba(0,0,0,0.2);max-width:90vw;max-height:90vh;display:flex;flex-direction:column;align-items:center;min-width:320px;" onclick="event.stopPropagation()">
+                        <h2 class="text-xl font-bold mb-4">Upload Custom Color</h2>
+                        <form id="customColorForm" style="width:100%;">
+                            <div class="mb-4 w-full">
+                                <label for="customColorImage" class="block mb-2 text-sm font-semibold text-gray-700">Color Image:</label>
+                                <input type="file" id="customColorImage" name="customColorImage" accept="image/*" class="block w-full border border-gray-300 rounded-lg py-2 px-3 text-sm">
+                            </div>
+                            <div class="mb-4 w-full">
+                                <label for="customColorHex" class="block mb-2 text-sm font-semibold text-gray-700">Hex Color Code:</label>
+                                <input type="text" id="customColorHex" name="customColorHex" placeholder="#RRGGBB" class="block w-full border border-gray-300 rounded-lg py-2 px-3 text-sm" maxlength="7">
+                            </div>
+                            <div class="flex gap-4 mt-2 w-full">
+                                <button type="button" id="closeCustomColorModalBtn" class="bg-gray-300 text-gray-700 px-4 py-2 rounded-lg font-medium hover:bg-gray-400">Cancel</button>
+                                <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700">Add Color</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+              
+
+
+
+
+                <!-- Packaging Options (from Customization packaging_images) -->
+                {% if product.category.customizations.first.packaging_images.all %}
+                <div>
+                    <h3 class="text-sm font-medium text-gray-900 mb-3">Packaging Options:</h3>
+                    <div class="flex flex-wrap gap-2">
+                        {% for option in product.category.customizations.first.packaging_images.all %}
+                         <div class="">
+                        <label style="cursor:pointer;" class="flex flex-col items-center gap-1 relative">
+                            <input type="checkbox" name="wishlist_packs" value="{{ option.id }}" data-name="{{ option.name }}" {% if option.image and option.image.url %}data-image="{{ option.image.url }}"{% endif %} class="peer" hidden required>
+                            <span class="w-full h-full  flex items-center justify-center overflow-hidden peer-checked:border-blue-700 relative" title="{{ option.name }}" style="position:relative;">
+                                {% if option.image and option.image.url %}
+                                    <img src="{{ option.image.url }}" alt="{{ option.name }}" class="object-cover w-full h-full rounded-lg pack-thumb" style="max-width:90px;max-height:90px;" onclick="showPackModal('{{ option.image.url }}', '{{ option.name }}')">
+                                {% else %}
+                                    <span class="w-full h-full flex items-center justify-center text-gray-400 bg-gray-100">No Image</span>
+                                {% endif %}
+                                <span class="checkmark-overlay" style="display:none; position:absolute; top:6px; right:6px; z-index:2; background:rgba(37,99,235,0.9); color:white; border-radius:50%; width:28px; height:28px; justify-content:center; align-items:center; font-size:1.2rem; box-shadow:0 2px 8px rgba(0,0,0,0.15);"><svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='white' width='20' height='20'><path fill-rule='evenodd' d='M16.707 5.293a1 1 0 010 1.414l-7.25 7.25a1 1 0 01-1.414 0l-3.25-3.25a1 1 0 111.414-1.414l2.543 2.543 6.543-6.543a1 1 0 011.414 0z' clip-rule='evenodd'/></svg></span>
+                            </span>
+                            <span class="text-xs text-center mt-1">{{ option.name }}</span>
+                        </label>
+                        </div>
+                        {% endfor %}
+                    {% endif %}
+                        <!-- Upload Custom Packaging Button -->
+                        <button type="button" id="uploadCustomPackBtn" class="flex items-center gap-2 px-4 py-2 mt-4 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700 transition-colors" style="height:50px;">
+                            <i class="fas fa-plus"></i>
+                            <!-- <span>s</span> -->
+                        </button>
+                    </div>
+                </div>
+                <!-- Custom Packaging Modal -->
+                <div id="customPackModal" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.6);z-index:1100;align-items:center;justify-content:center;">
+                    <div style="background:white;padding:32px 24px;border-radius:16px;box-shadow:0 2px 16px rgba(0,0,0,0.2);max-width:90vw;max-height:90vh;display:flex;flex-direction:column;align-items:center;min-width:320px;" onclick="event.stopPropagation()">
+                        <h2 class="text-xl font-bold mb-4">Upload Custom Packaging</h2>
+                        <form id="customPackForm" style="width:100%;">
+                            <div class="mb-4 w-full">
+                                <label for="customPackImage" class="block mb-2 text-sm font-semibold text-gray-700">Packaging Image:</label>
+                                <input type="file" id="customPackImage" name="customPackImage" accept="image/*" class="block w-full border border-gray-300 rounded-lg py-2 px-3 text-sm">
+                            </div>
+                            <div class="flex gap-4 mt-2 w-full">
+                                <button type="button" id="closeCustomPackModalBtn" class="bg-gray-300 text-gray-700 px-4 py-2 rounded-lg font-medium hover:bg-gray-400">Cancel</button>
+                                <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700">Add Packaging</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+
+                  <!-- Artwork/Spec Upload Button -->
+               
+                <!-- Fragrance Options (as input) -->
+               
+
+               
+
+                <!-- Function Options (as input) -->
+              
+                
+                <!-- Ingredients -->
+                
+                
+
+                <!-- Price Per Unit -->
+               
+                <!-- Action Buttons (static for now) -->
+
+
+                <div class="mt-6 flex flex-col w-full">
+                    <label for="customizationNote" class="mb-2 text-sm font-semibold text-gray-700">Customization note:</label>
+                    <textarea id="customizationNote" name="customizationNote" rows="3" placeholder="Add any specific customization instructions or notes here..." class="w-full rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 py-2 px-3 text-sm resize-none mb-4 transition-shadow shadow-sm"></textarea>
+                </div>
+                <div class="mt-0 flex flex-row items-center gap-4 w-full">
+                    <div class="flex flex-col w-1/2">
+                        <!-- Customization Note Textarea -->
+                         <button id="addToWishlistBtn" type="button" class="w-full bg-blue-600 text-white py-3 px-6 rounded-lg font-medium hover:bg-blue-700 transition-colors flex items-center justify-center space-x-2">
+                            <i class="fas fa-heart"></i>
+                            <span>Add to Wishlist</span>
+                        </button>
+                        <div class="flex space-x-3 mt-2">
+                            <!-- <button class="flex-1 border border-gray-300 py-2 px-4 rounded-lg hover:bg-gray-50 transition-colors flex items-center justify-center space-x-2">
+                                <i class="fas fa-ruler"></i>
+                                <span>Request Sample</span>
+                            </button>
+                            <button class="flex-1 border border-gray-300 py-2 px-4 rounded-lg hover:bg-gray-50 transition-colors flex items-center justify-center space-x-2">
+                                <i class="fas fa-share-alt"></i>
+                                <span>Share</span>
+                            </button> -->
+                        </div>
+                    </div>
+
+                     <div class="flex flex-col items-start w-1/2">
+                        <div class="relative w-full max-w-xs">
+                            <input type="file" id="artworkUpload" name="artworkUpload" class="peer block w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 focus:outline-none" style="display:none;" onchange="updateArtworkFileName()">
+                            <label for="artworkUpload" class="w-full bg-blue-600 text-white py-3 px-6 rounded-lg font-medium hover:bg-blue-700 transition-colors flex items-center justify-center space-x-2">
+                                <i class="fas fa-upload mr-2"></i> Upload Spec Sheet
+                            </label>
+                            <span id="artworkFileName" class="block mt-2 text-xs text-gray-600"></span>
+                        </div>
+                    </div>
+                </div>
+
+
+        <!-- Color Image Modal -->
+        <div id="colorImageModal" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.6);z-index:1000;align-items:center;justify-content:center;" onclick="closeColorModal()">
+            <div style="background:white;padding:24px;border-radius:16px;box-shadow:0 2px 16px rgba(0,0,0,0.2);max-width:90vw;max-height:90vh;display:flex;flex-direction:column;align-items:center;" onclick="event.stopPropagation()">
+                <img id="colorImageModalImg" src="" alt="Color" style="width:220px;height:220px;object-fit:cover;border-radius:50%;margin-bottom:16px;">
+                <div id="colorImageModalName" style="font-size:1.2rem;font-weight:500;text-align:center;"></div>
+                <button onclick="closeColorModal()" style="margin-top:18px;padding:8px 24px;background:#2563eb;color:white;border:none;border-radius:8px;font-weight:500;cursor:pointer;">Close</button>
+            </div>
+        </div>
+        <!-- Packaging Image Modal -->
+        <div id="packImageModal" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.6);z-index:1000;align-items:center;justify-content:center;" onclick="closePackModal()">
+            <div style="background:white;padding:24px;border-radius:16px;box-shadow:0 2px 16px rgba(0,0,0,0.2);max-width:90vw;max-height:90vh;display:flex;flex-direction:column;align-items:center;" onclick="event.stopPropagation()">
+                <img id="packImageModalImg" src="" alt="Packaging" style="width:220px;height:220px;object-fit:cover;border-radius:16px;margin-bottom:16px;">
+                <div id="packImageModalName" style="font-size:1.2rem;font-weight:500;text-align:center;"></div>
+                <button onclick="closePackModal()" style="margin-top:18px;padding:8px 24px;background:#2563eb;color:white;border:none;border-radius:8px;font-weight:500;cursor:pointer;">Close</button>
+            </div>
+        </div>
+
+                <!-- Additional Info -->
+                <!-- <div class="space-y-3 text-sm">
+                    <div class="flex items-center space-x-2">
+                        <i class="fas fa-truck text-green-600"></i>
+                        <span>Free shipping on orders over $500</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <i class="fas fa-undo text-blue-600"></i>
+                        <span>30-day sample return policy</span>
+                    </div>
+                </div>
+
+                <div class="flex items-center space-x-2 text-sm text-gray-600">
+                    <i class="fas fa-eye"></i>
+                    <span>23 manufacturers are viewing this product</span>
+                </div> -->
+            </div>
+        </div>
+
+        <!-- Product Tabs -->
+        <div class="mt-16">
+            <div class="border-b border-gray-200">
+                <nav class="-mb-px flex space-x-8 justify-center">
+                    <button id="descTab" type="button" class="py-2 px-1 border-b-2 font-medium text-sm transition-colors border-blue-500 text-blue-600" onclick="showTab('description')">Description</button>
+                    <button id="ingTab" type="button" class="py-2 px-1 border-b-2 font-medium text-sm transition-colors border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300" onclick="showTab('ingredients')">Ingredients</button>
+                </nav>
+            </div>
+            <div class="py-8">
+                <div id="descriptionTab" class="prose max-w-none">
+                    <h3 class="text-lg font-medium mb-4">Description</h3>
+                    <p class="whitespace-pre-line">{{ product.description|safe }}</p>
+                </div>
+                <div id="ingredientsTab" class="prose max-w-none" style="display:none;">
+                    <h3 class="text-lg font-medium mb-4">Ingredients</h3>
+                    <p class="whitespace-pre-line">{{ product.ingredients|safe }}</p>
+                </div>
+            </div>
+        </div>
+         <script>
+                function updateArtworkFileName() {
+                    var input = document.getElementById('artworkUpload');
+                    var fileNameSpan = document.getElementById('artworkFileName');
+                    if (input.files && input.files.length > 0) {
+                        fileNameSpan.textContent = 'Selected: ' + input.files[0].name;
+                    } else {
+                        fileNameSpan.textContent = '';
+                    }
+                }
+                </script>
+        <script>
+// Add to Wishlist (localStorage only, with details)
+document.addEventListener('DOMContentLoaded', function() {
+    var btn = document.getElementById('addToWishlistBtn');
+    if (!btn) return;
+    btn.addEventListener('click', function() {
+        // Get selected color details (with image)
+        let colorInputs = document.querySelectorAll('input[name="wishlist_colors"]:checked');
+        let allColorInputs = document.querySelectorAll('input[name="wishlist_colors"]');
+        let selectedColors = Array.from(colorInputs).map(i => ({
+            id: i.value,
+            name: i.getAttribute('data-name'),
+            image: i.getAttribute('data-image') || null
+        }));
+        // Get selected pack details (with image)
+        let packInputs = document.querySelectorAll('input[name="wishlist_packs"]:checked');
+        let allPackInputs = document.querySelectorAll('input[name="wishlist_packs"]');
+        let selectedPacks = Array.from(packInputs).map(i => ({
+            id: i.value,
+            name: i.getAttribute('data-name'),
+            image: i.getAttribute('data-image') || null
+        }));
+
+        // Get selected perfume details
+        let perfumeInputs = document.querySelectorAll('input[name="wishlist_perfumes"]:checked');
+        let allPerfumeInputs = document.querySelectorAll('input[name="wishlist_perfumes"]');
+        let selectedPerfumes = Array.from(perfumeInputs).map(i => ({
+            id: i.value,
+            name: i.getAttribute('data-name')
+        }));
+
+        // Get selected function details
+        let functionInputs = document.querySelectorAll('input[name="wishlist_functions"]:checked');
+        let allFunctionInputs = document.querySelectorAll('input[name="wishlist_functions"]');
+        let selectedFunctions = Array.from(functionInputs).map(i => ({
+            id: i.value,
+            name: i.getAttribute('data-name')
+        }));
+
+        // Get uploaded file name
+        let artworkInput = document.getElementById('artworkUpload');
+        let uploadedFileName = (artworkInput && artworkInput.files.length > 0) ? artworkInput.files[0].name : null;
+
+        // Require at least one of each available option
+        if (allColorInputs.length > 0 && selectedColors.length === 0) {
+            alert('Please select at least one color option.');
+            return;
+        }
+        if (allPackInputs.length > 0 && selectedPacks.length === 0) {
+            alert('Please select at least one packaging option.');
+            return;
+        }
+        if (allPerfumeInputs.length > 0 && selectedPerfumes.length === 0) {
+            alert('Please select at least one perfume option.');
+            return;
+        }
+        if (allFunctionInputs.length > 0 && selectedFunctions.length === 0) {
+            alert('Please select at least one function option.');
+            return;
+        }
+
+        // Get product info from data attributes or template context
+        let productId = '{{ product.id }}';
+        let productName = '{{ product.name|escapejs }}';
+        let productPrice = '{{ product.price_per_unit }}';
+        let productImage = '';
+        let minOrderQty = '{{ product.min_order_quantity }}';
+        let productLink = window.location.origin + '{% url "product_detail" product.id %}';
+        {% with product.images.all|first as main_image %}
+        {% if main_image %}
+        productImage = '{{ main_image.image.url }}';
+        {% endif %}
+        {% endwith %}
+
+        // Build wishlist item
+        let item = {
+            id: Date.now(), // unique id for removal
+            product_id: productId,
+            product_name: productName,
+            product_price: productPrice,
+            product_main_image_url: productImage,
+            min_order_quantity: minOrderQty,
+            product_link: productLink,
+            selected_colors: selectedColors,
+            selected_packs: selectedPacks,
+            selected_perfumes: selectedPerfumes,
+            selected_functions: selectedFunctions,
+            uploaded_file_name: uploadedFileName
+        };
+
+        // Get wishlist from localStorage
+        let wishlist = JSON.parse(localStorage.getItem('wishlist') || '[]');
+        wishlist.push(item);
+        localStorage.setItem('wishlist', JSON.stringify(wishlist));
+
+        // Feedback
+        btn.innerHTML = '<i class="fas fa-check"></i> Added!';
+        btn.classList.remove('bg-blue-600');
+        btn.classList.add('bg-green-600');
+        setTimeout(function() {
+            btn.innerHTML = '<i class="fas fa-heart"></i> <span>Add to Wishlist</span>';
+            btn.classList.remove('bg-green-600');
+            btn.classList.add('bg-blue-600');
+        }, 1500);
+    });
+
+    // Show bigger color image modal
+    window.showColorModal = function(imgUrl, colorName) {
+        let modal = document.getElementById('colorImageModal');
+        let modalImg = document.getElementById('colorImageModalImg');
+        let modalName = document.getElementById('colorImageModalName');
+        modalImg.src = imgUrl;
+        modalName.textContent = colorName;
+        modal.style.display = 'flex';
+    }
+    window.closeColorModal = function() {
+        document.getElementById('colorImageModal').style.display = 'none';
+    }
+    // Show bigger packaging image modal
+    window.showPackModal = function(imgUrl, packName) {
+        let modal = document.getElementById('packImageModal');
+        let modalImg = document.getElementById('packImageModalImg');
+        let modalName = document.getElementById('packImageModalName');
+        modalImg.src = imgUrl;
+        modalName.textContent = packName;
+        modal.style.display = 'flex';
+    }
+    window.closePackModal = function() {
+        document.getElementById('packImageModal').style.display = 'none';
+    }
+});
+
+function setMainProductImage(url) {
+    var mainImg = document.getElementById('mainProductImage');
+    if(mainImg) {
+        mainImg.src = url;
+    }
+}
+</script>
+        <script>
+        function showTab(tab) {
+            var descTab = document.getElementById('descriptionTab');
+            var ingTab = document.getElementById('ingredientsTab');
+            var descBtn = document.getElementById('descTab');
+            var ingBtn = document.getElementById('ingTab');
+            if(tab === 'description') {
+                descTab.style.display = '';
+                ingTab.style.display = 'none';
+                descBtn.classList.add('border-blue-500', 'text-blue-600');
+                descBtn.classList.remove('border-transparent', 'text-gray-500');
+                ingBtn.classList.remove('border-blue-500', 'text-blue-600');
+                ingBtn.classList.add('border-transparent', 'text-gray-500');
+            } else {
+                descTab.style.display = 'none';
+                ingTab.style.display = '';
+                ingBtn.classList.add('border-blue-500', 'text-blue-600');
+                ingBtn.classList.remove('border-transparent', 'text-gray-500');
+                descBtn.classList.remove('border-blue-500', 'text-blue-600');
+                descBtn.classList.add('border-transparent', 'text-gray-500');
+            }
+        }
+        </script>
+    <style>
+    /* Show checkmark overlay when checkbox is checked */
+    input[name="wishlist_colors"]:checked ~ span .checkmark-overlay,
+    input[name="wishlist_packs"]:checked ~ span .checkmark-overlay {
+        display: flex !important;
+    }
+    /* Custom Color/Pack Modal z-index above other modals */
+    #customColorModal, #customPackModal { z-index: 1100; }
+    </style>
+    <script>
+    // Custom Color & Packaging Modal logic
+    document.addEventListener('DOMContentLoaded', function() {
+        // Custom Color Modal
+        var uploadColorBtn = document.getElementById('uploadCustomColorBtn');
+        var colorModal = document.getElementById('customColorModal');
+        var closeColorBtn = document.getElementById('closeCustomColorModalBtn');
+        var colorForm = document.getElementById('customColorForm');
+        if (uploadColorBtn && colorModal) {
+            uploadColorBtn.addEventListener('click', function() {
+                colorModal.style.display = 'flex';
+            });
+        }
+        if (closeColorBtn && colorModal) {
+            closeColorBtn.addEventListener('click', function() {
+                colorModal.style.display = 'none';
+            });
+        }
+        if (colorModal) {
+            colorModal.addEventListener('click', function() {
+                colorModal.style.display = 'none';
+            });
+        }
+        if (colorForm) {
+            colorForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                // You can handle the custom color data here (image + hex code)
+                // For now, just close the modal
+                colorModal.style.display = 'none';
+            });
+        }
+
+        // Custom Packaging Modal
+        var uploadPackBtn = document.getElementById('uploadCustomPackBtn');
+        var packModal = document.getElementById('customPackModal');
+        var closePackBtn = document.getElementById('closeCustomPackModalBtn');
+        var packForm = document.getElementById('customPackForm');
+        if (uploadPackBtn && packModal) {
+            uploadPackBtn.addEventListener('click', function() {
+                packModal.style.display = 'flex';
+            });
+        }
+        if (closePackBtn && packModal) {
+            closePackBtn.addEventListener('click', function() {
+                packModal.style.display = 'none';
+            });
+        }
+        if (packModal) {
+            packModal.addEventListener('click', function() {
+                packModal.style.display = 'none';
+            });
+        }
+        if (packForm) {
+            packForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                // You can handle the custom packaging image here
+                // For now, just close the modal
+                packModal.style.display = 'none';
+            });
+        }
+    });
+    </script>
+    </div>
+
+
+
+{% endblock %}

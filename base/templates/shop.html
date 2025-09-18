@@ -1,0 +1,343 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+    <!-- Category Hero -->
+    <section class="bg-white py-8">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+                {% for category in catagories_heor %}
+                <div class="relative group cursor-pointer overflow-hidden rounded-lg" onclick="selectCategoryHero('{{ category.id }}')">
+                    <div class="aspect-[4/5]">
+                        <img src="{{ category.image.url }}" alt="{{ category.name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                    </div>
+                    <div class="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors duration-300"></div>
+                    <div class="absolute bottom-4 left-4">
+                        <span class="bg-white px-4 py-2 rounded-full text-sm font-medium text-gray-900">{{ category.name }}</span>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <!-- Shop Content -->
+    <div class="container mx-auto px-4 py-8" >
+        <div class="flex flex-col lg:flex-row gap-8">
+            <!-- Sidebar -->
+            <aside class="lg:w-64 flex-shrink-0">
+                <div class="bg-white rounded-lg p-6 shadow-sm">
+                    <h3 class="font-semibold text-gray-900 mb-4">Category</h3>
+                    <div class="space-y-3">
+                        {% for category in catagories %}
+                        <div class="flex items-center justify-between">
+                            <label class="flex items-center cursor-pointer">
+                                <input type="checkbox" class="mr-3 category-filter" name="category" value="{{ category.id }}" onchange="filterProductsByCategory()">
+                                <span class="text-gray-700">{{ category.name }}</span>
+                            </label>
+                            <span class="text-gray-500 text-sm">{{ category.products.count }}</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    
+                    
+                </div>
+            </aside>
+
+            <!-- Main content -->
+            <main class="flex-1">
+                <!-- Filters -->
+                <div class="bg-white rounded-lg p-4 mb-6 shadow-sm">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <div class="flex items-center space-x-4">
+                            <button @click="viewMode = 'grid'" :class="viewMode === 'grid' ? 'text-gray-900' : 'text-gray-500'">
+                                <i class="fas fa-th-large"></i>
+                            </button>
+                            <button @click="viewMode = 'list'" :class="viewMode === 'list' ? 'text-gray-900' : 'text-gray-500'">
+                                <i class="fas fa-list"></i>
+                            </button>
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <span class="text-gray-600">Sort by:</span>
+                            <select x-model="sortBy" class="border border-gray-300 rounded px-3 py-1">
+                                <option value="best-selling">Best Selling</option>
+                                <option value="price-low">Price: Low to High</option>
+                                <option value="price-high">Price: High to Low</option>
+                                <option value="newest">Newest</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Grid -->
+                <div id="productGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {% for product in products %}
+                    <div class="group overflow-hidden bg-white hover:shadow-lg transition-all duration-300 product-card" data-category="{{ product.category.id }}">
+                        <div class="relative">
+                            <div class="aspect-[3/4] overflow-hidden">
+                                {% with product.images.all|first as main_image %}
+                                    {% if main_image %}
+                                     <a href="{% url 'product_detail' product.id %}">
+                                        <img src="{{ main_image.image.url }}" alt="{{ product.name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy">
+                                    </a>
+                                    {% else %}
+                                        <div class="w-full h-full flex items-center justify-center bg-gray-100 text-gray-400">No Image</div>
+                                    {% endif %}
+                                {% endwith %}
+                            </div>
+                            <!-- Heart icon -->
+                            <!-- <button class="absolute top-3 right-3 bg-white/80 hover:bg-white p-2 rounded-full transition-colors">
+                                <i class="far fa-heart text-gray-600"></i>
+                            </button> -->
+                        </div>
+                        <div class="p-4">
+                            <a href="{% url 'product_detail' product.id %}">
+                            <h3 class="font-medium text-gray-900 mb-2">{{ product.name }}</h3>
+                            </a>
+                            <div class="flex items-center space-x-2 mb-3">
+                                {% if product.price_per_unit %}
+                                <span class="font-semibold text-gray-900">${{ product.price_per_unit }} Per Unit</span>
+                                {% endif %}
+                            </div>
+                            {% if product.color_options.all %}
+                            <div class="flex space-x-2">
+                                {% for color in product.color_options.all %}
+                                <span class="inline-block w-4 h-4 rounded-full border-2 border-gray-200" style="background: {{ color.hex_code }}" title="{{ color.name }}"></span>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Pagination -->
+                {% if paginator.num_pages > 1 %}
+                <div class="flex justify-center mt-8">
+                    <div class="flex space-x-2">
+                        {% if page_obj.has_previous %}
+                        <a href="?page={{ page_obj.previous_page_number }}" class="px-3 py-2 text-gray-500 hover:text-gray-700">&lt;</a>
+                        {% else %}
+                        <span class="px-3 py-2 text-gray-300">&lt;</span>
+                        {% endif %}
+                        {% for num in paginator.page_range %}
+                            {% if page_obj.number == num %}
+                                <span class="px-3 py-2 bg-gray-900 text-white rounded">{{ num }}</span>
+                            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                                <a href="?page={{ num }}" class="px-3 py-2 text-gray-500 hover:text-gray-700">{{ num }}</a>
+                            {% elif num == 1 or num == paginator.num_pages %}
+                                <a href="?page={{ num }}" class="px-3 py-2 text-gray-500 hover:text-gray-700">{{ num }}</a>
+                                {% if num < page_obj.number|add:'-3' or num > page_obj.number|add:'3' %}
+                                    <span class="px-2">...</span>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                        {% if page_obj.has_next %}
+                        <a href="?page={{ page_obj.next_page_number }}" class="px-3 py-2 text-gray-500 hover:text-gray-700">&gt;</a>
+                        {% else %}
+                        <span class="px-3 py-2 text-gray-300">&gt;</span>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endif %}
+            </main>
+        </div>
+    </div>
+
+    <script>
+        function shopApp() {
+            return {
+                viewMode: 'grid',
+                sortBy: 'best-selling',
+                showOnSaleOnly: false,
+                
+                categories: [
+                    { name: 'Women', image: '/placeholder.svg?height=300&width=240' },
+                    { name: 'Men', image: '/placeholder.svg?height=300&width=240' },
+                    { name: 'Accessories', image: '/placeholder.svg?height=300&width=240' },
+                    { name: 'Dress', image: '/placeholder.svg?height=300&width=240' },
+                    { name: 'Bras', image: '/placeholder.svg?height=300&width=240' }
+                ],
+                
+                categoryFilters: [
+                    { name: 'T-shirts', count: 23, checked: false },
+                    { name: 'Footwear', count: 44, checked: false },
+                    { name: 'Shirts', count: 75, checked: false },
+                    { name: 'Dresses', count: 33, checked: false },
+                    { name: 'Underwear', count: 45, checked: false },
+                    { name: 'Accessories', count: 32, checked: false }
+                ],
+                
+                products: [
+                    {
+                        id: 1,
+                        name: 'V-neck button down vest',
+                        price: 69.99,
+                        originalPrice: 99.99,
+                        image: '/placeholder.svg?height=400&width=300',
+                        badge: 'Hot',
+                        badgeColor: 'hot',
+                        colors: ['beige', 'green', 'olive'],
+                        countdown: { days: 0, hours: 6, minutes: 37, seconds: 14 }
+                    },
+                    {
+                        id: 2,
+                        name: 'Nike Sportswear Tee Shirts',
+                        price: 59.99,
+                        originalPrice: 89.99,
+                        image: '/placeholder.svg?height=400&width=300',
+                        badge: 'FLASH SALE',
+                        badgeColor: 'flash',
+                        colors: ['white', 'blue'],
+                        countdown: { days: 0, hours: 6, minutes: 37, seconds: 14 }
+                    },
+                    {
+                        id: 3,
+                        name: "Women's T-shirts Plus Size",
+                        price: 49.99,
+                        originalPrice: 79.99,
+                        image: '/placeholder.svg?height=400&width=300',
+                        badge: 'Trending',
+                        badgeColor: 'trending',
+                        colors: ['white', 'black'],
+                        saleText: 'TOP PRODUCT SALE OFF 50%'
+                    },
+                    {
+                        id: 4,
+                        name: 'Summer Linen Pants',
+                        price: 74.99,
+                        originalPrice: 104.99,
+                        image: '/placeholder.svg?height=400&width=300',
+                        colors: ['pink', 'white', 'olive']
+                    },
+                    {
+                        id: 5,
+                        name: 'Half sleeve crop top',
+                        price: 64.99,
+                        originalPrice: 119.99,
+                        image: '/placeholder.svg?height=400&width=300',
+                        badge: 'FLASH SALE',
+                        badgeColor: 'flash',
+                        colors: ['black'],
+                        saleText: 'TOP PRODUCT SALE OFF 50%'
+                    },
+                    {
+                        id: 6,
+                        name: 'Summer two piece set',
+                        price: 94.99,
+                        originalPrice: 139.99,
+                        image: '/placeholder.svg?height=400&width=300',
+                        badge: '20% OFF',
+                        badgeColor: 'sale',
+                        colors: ['black', 'white', 'green']
+                    },
+                    {
+                        id: 7,
+                        name: "Women's straight leg pants",
+                        price: 64.99,
+                        originalPrice: 69.99,
+                        image: '/placeholder.svg?height=400&width=300',
+                        badge: 'New arrival',
+                        badgeColor: 'new',
+                        colors: ['white', 'pink', 'olive'],
+                        saleText: 'TOP PRODUCT SALE OFF 50%'
+                    },
+                    {
+                        id: 8,
+                        name: 'Short sleeve office shirt',
+                        price: 59.99,
+                        originalPrice: 159.99,
+                        image: '/placeholder.svg?height=400&width=300',
+                        colors: ['white', 'black', 'blue']
+                    },
+                    {
+                        id: 9,
+                        name: 'Loose V-neck T-shirt',
+                        price: 39.99,
+                        originalPrice: 59.99,
+                        image: '/placeholder.svg?height=400&width=300',
+                        colors: ['white', 'black', 'blue']
+                    }
+                ],
+                
+                get filteredProducts() {
+                    let filtered = this.products;
+                    
+                    if (this.showOnSaleOnly) {
+                        filtered = filtered.filter(product => product.originalPrice && product.originalPrice > product.price);
+                    }
+                    
+                    // Sort products
+                    switch (this.sortBy) {
+                        case 'price-low':
+                            filtered.sort((a, b) => a.price - b.price);
+                            break;
+                        case 'price-high':
+                            filtered.sort((a, b) => b.price - a.price);
+                            break;
+                        case 'newest':
+                            filtered.reverse();
+                            break;
+                        default:
+                            // best-selling - keep original order
+                            break;
+                    }
+                    
+                    return filtered;
+                },
+                
+                getColorClass(color) {
+                    const colorMap = {
+                        beige: 'bg-amber-100',
+                        green: 'bg-green-500',
+                        olive: 'bg-green-700',
+                        white: 'bg-white border-gray-200',
+                        blue: 'bg-blue-500',
+                        black: 'bg-black',
+                        pink: 'bg-pink-300',
+                        red: 'bg-red-500'
+                    };
+                    return colorMap[color] || 'bg-gray-300';
+                },
+                
+                formatCountdown(countdown) {
+                    return `${countdown.days.toString().padStart(2, '0')}d : ${countdown.hours.toString().padStart(2, '0')}h : ${countdown.minutes.toString().padStart(2, '0')}m : ${countdown.seconds.toString().padStart(2, '0')}s`;
+                }
+            }
+        }
+    </script>
+    <script>
+    // When a hero category is clicked, check the corresponding sidebar checkbox and filter
+    function selectCategoryHero(catId) {
+        // Uncheck all first
+        document.querySelectorAll('.category-filter').forEach(cb => { cb.checked = false; });
+        // Check the clicked one
+        var cb = document.querySelector('.category-filter[value="' + catId + '"]');
+        if (cb) {
+            cb.checked = true;
+        }
+        filterProductsByCategory();
+        // Optionally scroll to product grid
+        var grid = document.getElementById('productGrid');
+        if (grid) grid.scrollIntoView({behavior:'smooth'});
+    }
+    </script>
+    <script>
+    // Filter products by checked categories
+    function filterProductsByCategory() {
+        var checked = Array.from(document.querySelectorAll('.category-filter:checked')).map(cb => cb.value);
+        var cards = document.querySelectorAll('.product-card');
+        if (checked.length === 0) {
+            cards.forEach(card => card.style.display = '');
+        } else {
+            cards.forEach(card => {
+                if (checked.includes(card.getAttribute('data-category'))) {
+                    card.style.display = '';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+    }
+    </script>
+{% endblock %}

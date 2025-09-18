@@ -1,0 +1,235 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+
+<div class="max-w-6xl mx-auto px-4 py-12">
+	<div class="flex items-center justify-between mb-8">
+		<h1 class="text-3xl font-bold">My Wishlist <span class="text-xl align-middle cursor-pointer" title="Edit"></span></h1>
+			<button id="getQuoteBtn" class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-5 py-2 rounded-lg shadow transition-colors">
+				<i class="fas fa-file-invoice-dollar"></i>
+				<span>Get Quote</span>
+			</button>
+</div>
+<!-- Quote Modal -->
+<div id="quoteModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 hidden">
+	<div class="bg-white rounded-xl shadow-lg w-full max-w-md p-8 relative">
+		<button onclick="closeQuoteModal()" class="absolute top-3 right-3 text-gray-400 hover:text-red-500 text-2xl">&times;</button>
+		<h2 class="text-2xl font-bold mb-6 text-center">Request a Quote</h2>
+		<form id="quoteForm" class="space-y-4" autocomplete="off">
+			<div>
+				<label class="block text-gray-700 font-medium mb-1" for="quote_name">Name</label>
+				<input type="text" id="quote_name" name="name" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+			</div>
+			<div>
+				<label class="block text-gray-700 font-medium mb-1" for="quote_company">Company Name</label>
+				<input type="text" id="quote_company" name="company" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+			</div>
+			<div>
+				<label class="block text-gray-700 font-medium mb-1" for="quote_email">Email</label>
+				<input type="email" id="quote_email" name="email" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+			</div>
+			<div>
+				<label class="block text-gray-700 font-medium mb-1" for="quote_phone">Phone Number</label>
+				<input type="tel" id="quote_phone" name="phone" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+			</div>
+			<div>
+				<label class="block text-gray-700 font-medium mb-1" for="quote_address">Address</label>
+				<input type="text" id="quote_address" name="address" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+			</div>
+			<button id="quoteSendBtn" type="submit" class="w-full bg-blue-600 text-white font-semibold py-3 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2">
+				<span id="quoteSendBtnText">Send</span>
+				<svg id="quoteSendSpinner" class="hidden animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+					<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+					<path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+				</svg>
+			</button>
+		</form>
+	</div>
+</div>
+<script>
+// Quote form AJAX submission
+document.addEventListener('DOMContentLoaded', function() {
+	const quoteForm = document.getElementById('quoteForm');
+	const sendBtn = document.getElementById('quoteSendBtn');
+	const sendBtnText = document.getElementById('quoteSendBtnText');
+	const sendSpinner = document.getElementById('quoteSendSpinner');
+	if (quoteForm) {
+		quoteForm.addEventListener('submit', async function(e) {
+			e.preventDefault();
+			sendBtn.disabled = true;
+			sendBtn.classList.add('opacity-60', 'cursor-not-allowed');
+			sendBtnText.textContent = 'Sending...';
+			sendSpinner.classList.remove('hidden');
+			const formData = new FormData(quoteForm);
+			// Add wishlist as a JSON string (ensure correct format)
+			let wishlistArr = [];
+			try {
+				wishlistArr = JSON.parse(localStorage.getItem('wishlist') || '[]');
+			} catch (err) {
+				wishlistArr = [];
+			}
+			formData.append('wishlist', JSON.stringify(wishlistArr));
+			// Add uploaded file if present
+			const artworkInput = document.getElementById('artworkUpload');
+			if (artworkInput && artworkInput.files.length > 0) {
+				formData.append('uploaded_file', artworkInput.files[0]);
+			}
+			try {
+				const response = await fetch('/send-quote/', {
+					method: 'POST',
+					headers: {
+						'X-CSRFToken': getCookie('csrftoken')
+					},
+					body: formData
+				});
+				const result = await response.json();
+				if (result.success) {
+					closeQuoteModal();
+					alert('Quote request sent successfully!');
+				} else {
+					alert('Failed to send quote: ' + (result.error || 'Unknown error'));
+				}
+			} catch (err) {
+				alert('Failed to send quote: ' + err);
+			}
+			sendBtn.disabled = false;
+			sendBtn.classList.remove('opacity-60', 'cursor-not-allowed');
+			sendBtnText.textContent = 'Send';
+			sendSpinner.classList.add('hidden');
+		});
+	}
+});
+
+// Helper to get CSRF token from cookie
+function getCookie(name) {
+		let cookieValue = null;
+		if (document.cookie && document.cookie !== '') {
+				const cookies = document.cookie.split(';');
+				for (let i = 0; i < cookies.length; i++) {
+						const cookie = cookies[i].trim();
+						if (cookie.substring(0, name.length + 1) === (name + '=')) {
+								cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+								break;
+						}
+				}
+		}
+		return cookieValue;
+}
+// Modal open/close logic
+const getQuoteBtn = document.getElementById('getQuoteBtn');
+const quoteModal = document.getElementById('quoteModal');
+function openQuoteModal() {
+	quoteModal.classList.remove('hidden');
+}
+function closeQuoteModal() {
+	quoteModal.classList.add('hidden');
+}
+getQuoteBtn.addEventListener('click', openQuoteModal);
+// Optional: close modal on outside click
+quoteModal.addEventListener('click', function(e) {
+	if (e.target === quoteModal) closeQuoteModal();
+});
+</script>
+	</div>
+	<div class="bg-white rounded-xl shadow p-6">
+		<div class="overflow-x-auto">
+			<table class="min-w-full divide-y divide-gray-200">
+				<thead>
+					<tr class="text-gray-500 text-sm">
+						<th class="w-10"></th>
+						<th class="w-32"></th>
+						<th class="text-left py-3 px-2">Product Name</th>
+						<th class="text-left py-3 px-2">Color</th>
+						<th class="text-left py-3 px-2">Packaging</th>
+						<!-- Removed Perfume and Function Option columns -->
+						<th class="text-left py-3 px-2">Stock Status</th>
+					</tr>
+				</thead>
+				<tbody id="wishlistTableBody" class="divide-y divide-gray-100">
+				</tbody>
+			</table>
+		</div>
+		<div id="wishlistEmpty" class="hidden text-center text-gray-500 py-12">
+			<svg class="mx-auto mb-4 w-16 h-16 text-gray-300" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 7.5a3.75 3.75 0 00-6.364-2.651A3.75 3.75 0 007.5 7.5c0 4.28 4.5 7.5 4.5 7.5s4.5-3.22 4.5-7.5z" /></svg>
+			<div class="text-lg">Your wishlist is empty.</div>
+			<div class="text-sm mt-2">Browse products and add your favorites here!</div>
+		</div>
+	</div>
+</div>
+<script>
+function renderWishlistTable() {
+	const tbody = document.getElementById('wishlistTableBody');
+	const emptyDiv = document.getElementById('wishlistEmpty');
+	let wishlist = JSON.parse(localStorage.getItem('wishlist') || '[]');
+	tbody.innerHTML = '';
+	if (!wishlist.length) {
+		emptyDiv.classList.remove('hidden');
+		return;
+	} else {
+		emptyDiv.classList.add('hidden');
+	}
+	wishlist.forEach(item => {
+		// Color column: show image if available, else swatch
+		let colorCol = '';
+		if ((item.selected_colors||[]).length) {
+			colorCol = `<div class='flex flex-row flex-wrap gap-2'>` +
+				(item.selected_colors||[]).map(c=>
+					`<div class='flex flex-col items-center'>
+						${c.image ? `<img src='${c.image}' alt='${c.name}' class='w-8 h-8 rounded-full object-cover border border-gray-300 mb-1'>` : `<span class='inline-block w-8 h-8 rounded-full border border-gray-300' style='background:${c.hex_code}' title='${c.name}'></span>`}
+						<span class='text-xs mt-1 text-gray-700 text-center'>${c.name}</span>
+					</div>`
+				).join('') +
+			`</div>`;
+		}
+		// Packaging column: show image if available, ensure at least 2 options
+		let packs = item.selected_packs || [];
+		let packCol = packs.map(p=>
+			`<div class='flex flex-col items-center mb-2'>
+				${p.image ? `<img src='${p.image}' alt='${p.name}' class='w-8 h-8 rounded-lg object-cover border border-gray-300 mb-1'>` : ''}
+				<span class='inline-block px-2 py-0.5 border rounded text-xs bg-gray-100'>${p.name}</span>
+			</div>`
+		).join('');
+		// Add placeholders if less than 2 options
+		if (packs.length < 2) {
+			for (let i = packs.length; i < 2; i++) {
+				packCol += `<div class='flex flex-col items-center mb-2 opacity-50'>
+					<div class='w-8 h-8 rounded-lg border border-dashed border-gray-300 mb-1 bg-gray-100 flex items-center justify-center'>--</div>
+					<span class='inline-block px-2 py-0.5 border rounded text-xs bg-gray-100'>No Option</span>
+				</div>`;
+			}
+		}
+		// Perfume column
+		// Removed perfumeCol and functionCol
+		let perfumeCol = '';
+		let functionCol = '';
+		tbody.innerHTML += `
+			<tr class="hover:bg-gray-50">
+				<td class="text-center align-middle">
+					<button onclick="removeFromWishlist(${item.id})" class="text-gray-400 hover:text-red-500 text-xl">&times;</button>
+				</td>
+				<td class="align-middle">
+					<img src="${item.product_main_image_url || ''}" alt="${item.product_name}" class="w-16 h-16 object-cover rounded">
+				</td>
+				<td class="align-middle">
+					<div class="font-medium text-gray-900">${item.product_name}</div>
+					${item.uploaded_file_name ? `<div class='text-xs text-blue-600 mt-2'><i class='fas fa-paperclip mr-1'></i>Uploaded: ${item.uploaded_file_name}</div>` : ''}
+				<\/td>
+				<td class="align-middle">${colorCol}<\/td>
+				<td class="align-middle">${packCol}<\/td>
+				
+				<td class="align-middle text-green-600 font-medium">In Stock<\/td>
+			<\/tr>
+		`;
+	});
+}
+function removeFromWishlist(id) {
+	let wishlist = JSON.parse(localStorage.getItem('wishlist') || '[]');
+	wishlist = wishlist.filter(item => item.id !== id);
+	localStorage.setItem('wishlist', JSON.stringify(wishlist));
+	renderWishlistTable();
+}
+document.addEventListener('DOMContentLoaded', renderWishlistTable);
+</script>
+
+{% endblock %}

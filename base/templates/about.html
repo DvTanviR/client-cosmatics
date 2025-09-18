@@ -1,0 +1,231 @@
+{% extends 'main.html' %}
+
+{% block content %}
+    <!-- About Hero -->
+    <div class="relative h-96 bg-gradient-to-b from-cyan-400 to-cyan-500">
+        <div class="absolute inset-0">
+            <img
+                src="https://zhbeyondcosmetics.com/_amplify/image?url=https:%2F%2Fs3.zhbeyondcosmetics.com%2Fimages%2Fabout%2Fcompany-building.jpg&w=1536&h=650&q=85&fit=cover"
+                alt="Beyond Cosmetics Manufacturing Facility"
+                class="w-full h-full object-cover"
+            />
+        </div>
+    </div>
+
+    <!-- Who We Are -->
+    <section class="py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <!-- Left Content -->
+                <div>
+                    <h2 class="text-4xl font-bold text-gray-900 mb-6">Who We Are</h2>
+                    <div class="text-gray-600 leading-relaxed space-y-4">
+                        <p>
+                            ZhuHai Beyond Cosmetics Co., Ltd is a leading cosmetics OEM/ODM manufacturer since 2006, based in
+                            Zhuhai, Guangdong, China. Our strategic location near Hong Kong and Macao enhances our global reach and
+                            ensures efficient connectivity with customers worldwide.
+                        </p>
+                        <p>
+                            All of our products comply with EU and FDA regulations. Thanks to our high-quality standards, our
+                            products are well recognized in the market. Over the past few years, we have worked closely with more
+                            than 100 customers across 30+ countries.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Right Image -->
+                <div class="relative">
+                    <div class="bg-gradient-to-r from-orange-400 via-yellow-400 via-green-500 via-cyan-400 via-blue-500 to-purple-500 p-8 rounded-lg">
+                        <div class="bg-white p-6 rounded-lg shadow-lg">
+                            <div class="flex items-center justify-center mb-4">
+                                <div class="text-2xl font-bold">
+                                    <span class="text-pink-500">b</span>
+                                    <span class="text-gray-800">BEYOND</span>
+                                </div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-lg font-semibold text-gray-800 mb-2">珠海市博海时尚化妆品有限公司</div>
+                                <div class="text-sm text-gray-600">Zhuhai Beyond Cosmetics Company Limited</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Company Stats -->
+    <section class="py-16 bg-gray-50" x-data="{ 
+        stats: [
+            { value: '6,000+', unit: 'm²', label: 'Facility Area', color: 'text-blue-600' },
+            { value: '300+', unit: '', label: 'Skilled Workers', color: 'text-purple-600' },
+            { value: '150+', unit: 'million', label: 'Yearly Capacity Pieces', color: 'text-purple-600' },
+            { value: '13+', unit: 'Years', label: 'OEM/ODM Experience', color: 'text-purple-600' }
+        ]
+    }">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <template x-for="(stat, index) in stats" :key="index">
+                    <div class="text-center">
+                        <div class="text-4xl font-bold mb-2" :class="stat.color">
+                            <span x-text="stat.value"></span>
+                            <span x-show="stat.unit" class="text-2xl ml-1" x-text="stat.unit"></span>
+                        </div>
+                        <div class="text-gray-600 font-medium" x-text="stat.label"></div>
+                    </div>
+                </template>
+            </div>
+        </div>
+    </section>
+
+    <!-- What We Make -->
+    <section class="py-16 px-4 max-w-7xl mx-auto">
+        <div class="text-center mb-12">
+            <h2 class="text-4xl font-bold text-gray-900 mb-6">What We Make</h2>
+            <p class="text-lg text-gray-600 max-w-4xl mx-auto leading-relaxed">
+                Our experienced R&D team specializes in a wide range of high-quality cosmetic products. We offer eyeshadows in
+                various colors and finishes, blushes for a natural glow, and lip glosses for a glossy finish. Our lipsticks
+                come in a range of shades, from nudes to vibrant reds, to suit every preference. Each item is carefully made
+                to meet the highest standards of quality and performance.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="rounded-lg overflow-hidden shadow-lg">
+                <img
+                    src="https://zhbeyondcosmetics.com/_amplify/image?url=https:%2F%2Fs3.zhbeyondcosmetics.com%2Fimages%2Fabout%2Fshowroom-01.jpg&w=1280&h=1280&q=85"
+                    alt="Modern cosmetics showroom with curved walls and product displays"
+                    class="w-full h-64 object-cover"
+                />
+            </div>
+            <div class="rounded-lg overflow-hidden shadow-lg">
+                <img
+                    src="https://zhbeyondcosmetics.com/_amplify/image?url=https:%2F%2Fs3.zhbeyondcosmetics.com%2Fimages%2Fabout%2Fshowroom-02.jpg&w=1280&h=960&q=85"
+                    alt="Product development workspace with cosmetic samples and palettes"
+                    class="w-full h-64 object-cover"
+                />
+            </div>
+            <div class="rounded-lg overflow-hidden shadow-lg">
+                <img
+                    src="https://zhbeyondcosmetics.com/_amplify/image?url=https:%2F%2Fs3.zhbeyondcosmetics.com%2Fimages%2Fabout%2Fshowroom-03.jpg&w=1280&h=960&q=85"
+                    alt="Retail display showing organized cosmetic products on shelves"
+                    class="w-full h-64 object-cover"
+                />
+            </div>
+            <div class="rounded-lg overflow-hidden shadow-lg">
+                <img
+                    src="https://zhbeyondcosmetics.com/_amplify/image?url=https:%2F%2Fs3.zhbeyondcosmetics.com%2Fimages%2Fabout%2Fshowroom-03.jpg&w=1280&h=960&q=85"
+                    alt="Cosmetic product showcase with Beyond Cosmetics branding"
+                    class="w-full h-64 object-cover"
+                />
+            </div>
+        </div>
+    </section>
+
+    <!-- How We Make -->
+    <section class="py-16 px-4 max-w-7xl mx-auto">
+        <div class="grid lg:grid-cols-2 gap-12 items-start">
+            <div>
+                <h2 class="text-4xl font-bold text-gray-900 mb-6">How We Make</h2>
+                <p class="text-lg text-gray-600 leading-relaxed">
+                    Our experienced R&D team develops a wide range of cosmetic formulations. We cover cosmetics for lips, eyes,
+                    and face. Throughout production, we perform in-house tests on raw materials to finished goods, assessing pH,
+                    viscosity, melting points, stability, and microbiological standards.
+                </p>
+            </div>
+
+            <div class="space-y-4">
+                <!-- Main manufacturing facility image -->
+                <div class="w-full">
+                    <img
+                        src="https://zhbeyondcosmetics.com/_amplify/image?url=https:%2F%2Fs3.zhbeyondcosmetics.com%2Fimages%2Fabout%2Fworkshop-3.jpg&w=1280&h=960&q=85&fit=cover"
+                        alt="Manufacturing facility with workers in protective clothing"
+                        class="w-full h-64 object-cover rounded-lg"
+                    />
+                </div>
+
+                <!-- Three equipment images in a row -->
+                <div class="grid grid-cols-3 gap-4">
+                    <img
+                        src="https://zhbeyondcosmetics.com/_amplify/image?url=https:%2F%2Fs3.zhbeyondcosmetics.com%2Fimages%2Fabout%2Fworkshop-5.jpg&w=1280&h=960&q=85&fit=cover"
+                        alt="Quality control testing equipment"
+                        class="w-full h-32 object-cover rounded-lg"
+                    />
+                    <img
+                        src="https://zhbeyondcosmetics.com/_amplify/image?url=https:%2F%2Fs3.zhbeyondcosmetics.com%2Fimages%2Fabout%2Fworkshop-1.jpg&w=1280&h=960&q=85&fit=cover"
+                        alt="Precision dispensing machinery"
+                        class="w-full h-32 object-cover rounded-lg"
+                    />
+                    <img
+                        src="https://zhbeyondcosmetics.com/_amplify/image?url=https:%2F%2Fs3.zhbeyondcosmetics.com%2Fimages%2Fabout%2Fworkshop-4.jpg&w=1280&h=960&q=85&fit=cover"
+                        alt="Industrial mixing equipment"
+                        class="w-full h-32 object-cover rounded-lg"
+                    />
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Company Culture -->
+    <section class="py-16 px-4 bg-gray-50">
+        <div class="max-w-7xl mx-auto">
+            <!-- Heading -->
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+                    We believe in building a culture that fosters unity and joy.
+                </h2>
+            </div>
+
+            <!-- Culture Images Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Top row - 2 larger images -->
+                <div class="lg:col-span-1">
+                    <img
+                        src="https://zhbeyondcosmetics.com/_amplify/image?url=https:%2F%2Fs3.zhbeyondcosmetics.com%2Fimages%2Fabout%2Fteam%2Fteam-building-at-changlong-park.jpg&w=1536&h=1080&q=85"
+                        alt="Team building event with employees in red shirts"
+                        class="w-full h-64 object-cover rounded-lg shadow-md"
+                    />
+                </div>
+                <div class="lg:col-span-1">
+                    <img
+                        src="https://zhbeyondcosmetics.com/_amplify/image?url=https:%2F%2Fs3.zhbeyondcosmetics.com%2Fimages%2Fabout%2Fteam%2Fteam-building-beside-a-park.jpg&w=1536&h=1080&q=85"
+                        alt="Company outing at traditional Chinese architecture"
+                        class="w-full h-64 object-cover rounded-lg shadow-md"
+                    />
+                </div>
+
+                <!-- Bottom row - 3 images -->
+                <div class="lg:col-span-1">
+                    <img
+                        src="https://zhbeyondcosmetics.com/_amplify/image?url=https:%2F%2Fs3.zhbeyondcosmetics.com%2Fimages%2Fabout%2Fteam%2Fteam-members-under-sky.jpg&w=1280&h=1459&q=85"
+                        alt="Team photo with mountain backdrop"
+                        class="w-full h-64 object-cover rounded-lg shadow-md"
+                    />
+                </div>
+                <div class="md:col-span-1 lg:col-span-1">
+                    <img
+                        src="https://zhbeyondcosmetics.com/_amplify/image?url=https:%2F%2Fs3.zhbeyondcosmetics.com%2Fimages%2Fabout%2Fteam%2Fteam-building-on-mountain.jpg&w=1280&h=1459&q=85"
+                        alt="Group photo at scenic location"
+                        class="w-full h-64 object-cover rounded-lg shadow-md"
+                    />
+                </div>
+                <div class="md:col-span-1 lg:col-span-1">
+                    <img
+                        src="https://zhbeyondcosmetics.com/_amplify/image?url=https:%2F%2Fs3.zhbeyondcosmetics.com%2Fimages%2Fabout%2Fteam%2Fteam-in-makeup-newyork-fair-2024.jpg&w=1280&h=1459&q=85"
+                        alt="Business team at trade show exhibition"
+                        class="w-full h-64 object-cover rounded-lg shadow-md"
+                    />
+                </div>
+                <div class="md:col-span-1 lg:col-span-1">
+                    <img
+                        src="https://zhbeyondcosmetics.com/_amplify/image?url=https:%2F%2Fs3.zhbeyondcosmetics.com%2Fimages%2Fabout%2Fteam%2Fteam-in-makeup-newyork-fair-2024.jpg&w=1280&h=1459&q=85"
+                        alt="Business team at trade show exhibition"
+                        class="w-full h-64 object-cover rounded-lg shadow-md"
+                    />
+                </div>
+            </div>
+        </div>
+    </section>
+
+    
+{% endblock %}

@@ -1,0 +1,245 @@
+{% extends 'main.html' %}
+
+{% block content %}
+{% load static %}
+
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+	<h1 class="text-4xl font-extrabold text-center mb-2 mt-4">{{category.name}} Reimagined <br>For  Your Brand!</h1>
+	<div class="text-center text-lg font-semibold mb-2 mt-2">
+		A timeless essential in every mackup collection, lipstick offer endless possibilities from soft neutrals bold expressive shades. As a specialized privet label manufacturer, we transform this versatile product into a custom branded solution. With thousands of proven formulas, elegant packaging options and advace white-label production we deliver high quality {{category.name}} tailored to your vision efficiently, beautifully and ready to market. 
+	</div>
+	<!-- <div class="text-center text-base mb-6">
+		Logo-only print; 1,000+ pcs unlock <span class="font-bold">custom color &amp; box</span> options.
+	</div> -->
+							<div class="flex flex-wrap gap-6 justify-center items-center">
+								<!-- Vegan -->
+								<div class="flex items-center gap-2">
+									<div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
+										<img src="{% static 'vegan.png' %}" alt="" class="w-16 h-16">
+									</div>
+									<span class="text-sm font-medium text-gray-700"></span>
+								</div>
+
+								<!-- Free of Talc -->
+								<div class="flex items-center gap-2">
+									<div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center">
+										<img src="{% static 'talk.png' %}" alt="" class="w-16 h-16">
+									</div>
+									<span class="text-sm font-medium text-gray-700"></span>
+								</div>
+
+								<!-- Free of Paraben -->
+								<div class="flex items-center gap-2">
+									<div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center">
+										<img src="{% static 'paraben.png' %}" alt="" class="w-16 h-16">
+									</div>
+									<span class="text-sm font-medium text-gray-700"></span>
+								</div>
+
+								<!-- Hypoallergenic -->
+								<div class="flex items-center gap-2">
+									<div class="w-16 h-16 bg-pink-100 rounded-full flex items-center justify-center">
+										<img src="{% static 'hyp.png' %}" alt="" class="w-16 h-16">
+									</div>
+									<span class="text-sm font-medium text-gray-700"></span>
+								</div>
+
+								<!-- Cruelty Free -->
+								<div class="flex items-center gap-2">
+									<div class="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center">
+										<img src="{% static 'cute.png' %}" alt="" class="w-16 h-16">
+									</div>
+									<span class="text-sm font-medium text-gray-700"></span>
+								</div>
+							</div>
+
+	<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+		{% for product in products %}
+		<div class="group overflow-hidden bg-white border rounded-xl shadow p-4 flex flex-col hover:shadow-lg transition-all duration-300">
+			<a href="{% url 'product_detail' product.id %}" class="block">
+			{% with product.images.all|first as main_image %}
+				{% if main_image %}
+					<div class="relative aspect-[4/3] overflow-hidden mb-4">
+						<img src="{{ main_image.image.url }}" alt="{{ product.name }}" class="rounded-lg object-cover w-full h-64 group-hover:scale-105 transition-transform duration-300">
+					</div>
+				{% else %}
+					<div class="w-full h-64 flex items-center justify-center bg-gray-100 rounded-lg mb-4 text-gray-400">No Image</div>
+				{% endif %}
+			{% endwith %}
+			<div class="font-bold text-lg mb-1">{{ product.name }}</div>
+			</a>
+			<div class="text-gray-600 text-sm mb-2">{{ product.description|truncatewords:10|safe }}</div>
+			<div class="mt-auto">
+				<!-- <div class="text-xs text-gray-500 font-semibold">Price Per Unit:</div>
+				<div class="text-purple-700 font-bold text-lg">${{ product.price_per_unit }}</div> -->
+			</div>
+		</div>
+		{% empty %}
+		<div class="col-span-full text-center text-gray-500 py-12">No products found in this category.</div>
+		{% endfor %}
+
+		<div class="col-span-full flex justify-center mt-6">
+			<a href="{% url 'shop' %}" class="bg-purple-700 hover:bg-purple-800 text-white font-semibold py-2 px-8 rounded-lg transition-colors shadow text-center">
+				View All Products
+			</a>
+		</div>
+	</div>
+	</div>
+
+	<!-- Customization Options Section -->
+	<div class="max-w-5xl mx-auto mt-16 mb-16">
+		<h2 class="text-3xl font-extrabold text-center mb-6">Explore Customization Options</h2>
+		<!-- Toggle Menu -->
+		<div id="customToggleMenu" class="flex justify-center border-b border-gray-200 mb-6">
+			<button type="button" class="toggle-tab px-8 py-3 font-semibold text-purple-700 border-b-4 border-purple-700 bg-white focus:outline-none" data-tab="color">Color</button>
+			<button type="button" class="toggle-tab px-8 py-3 font-semibold text-gray-700 hover:text-purple-700 border-b-4 border-transparent bg-white focus:outline-none" data-tab="texture">Texture</button>
+			<button type="button" class="toggle-tab px-8 py-3 font-semibold text-gray-700 hover:text-purple-700 border-b-4 border-transparent bg-white focus:outline-none" data-tab="function">Function</button>
+			<button type="button" class="toggle-tab px-8 py-3 font-semibold text-gray-700 hover:text-purple-700 border-b-4 border-transparent bg-white focus:outline-none" data-tab="packaging">Packaging</button>
+		</div>
+		<!-- Tab Contents -->
+		<div id="tab-content-color" class="tab-content">
+			<div class="text-center text-lg mb-8">Choose from over 200 shades to find the perfect color for your brand's target market.</div>
+			<div class="overflow-x-auto scrollbar-hide mb-6">
+				<div class="flex flex-nowrap gap-8 min-w-full px-2">
+					{% if customization and customization.color_images.all %}
+						{% for color in customization.color_images.all %}
+							<div class="flex flex-col items-center flex-shrink-0 ">
+								<img src="{{ color.image.url }}" class="w-[250px] h-[243px] object-contain mb-2" alt="{{ color.name }}">
+								<span class="font-medium">{{ color.name }}</span>
+							</div>
+						{% empty %}
+							<div class="text-gray-400">No color options available.</div>
+						{% endfor %}
+					{% else %}
+						<div class="text-gray-400">No color options available.</div>
+					{% endif %}
+				</div>
+			</div>
+			<!-- Slider dots -->
+			<!-- <div class="flex justify-center gap-2 mb-6">
+				<span class="inline-block w-3 h-3 rounded-full bg-purple-700"></span>
+				<span class="inline-block w-3 h-3 rounded-full bg-gray-300"></span>
+				<span class="inline-block w-3 h-3 rounded-full bg-gray-300"></span>
+				<span class="inline-block w-3 h-3 rounded-full bg-gray-300"></span>
+			</div> -->
+		</div>
+		<div id="tab-content-texture" class="tab-content hidden">
+			<div class="text-center text-lg mb-8">Choose from a variety of textures for your products.</div>
+			<div class="overflow-x-auto scrollbar-hide mb-6" id="texture-slider-container">
+					<div class="flex flex-nowrap gap-8 min-w-full px-2" id="texture-slider-row">
+					{% if customization and customization.texture_images.all %}
+						{% for texture in customization.texture_images.all %}
+							<div class="flex flex-col items-center flex-shrink-0">
+								<img src="{{ texture.image.url }}" class="w-[250px] h-[243px] object-contain mb-2" alt="{{ texture.name }}">
+								<span class="font-medium">{{ texture.name }}</span>
+							</div>
+						{% empty %}
+							<div class="text-gray-400">No texture options available.</div>
+						{% endfor %}
+					{% else %}
+						<div class="text-gray-400">No texture options available.</div>
+					{% endif %}
+				</div>
+			</div>
+		</div>
+		<div id="tab-content-function" class="tab-content hidden">
+			<div class="text-center text-lg mb-8">Select the function that best fits your product needs.</div>
+			<div class="overflow-x-auto scrollbar-hide mb-6" id="function-slider-container">
+					<div class="flex flex-nowrap gap-8 min-w-full px-2" id="function-slider-row">
+					{% if customization and customization.function_images.all %}
+						{% for function in customization.function_images.all %}
+							<div class="flex flex-col items-center flex-shrink-0">
+								<img src="{{ function.image.url }}" class="w-[250px] h-[243px] object-contain mb-2" alt="{{ function.name }}">
+								<span class="font-medium">{{ function.name }}</span>
+							</div>
+						{% empty %}
+							<div class="text-gray-400">No function options available.</div>
+						{% endfor %}
+					{% else %}
+						<div class="text-gray-400">No function options available.</div>
+					{% endif %}
+				</div>
+			</div>
+		</div>
+		<div id="tab-content-packaging" class="tab-content hidden">
+			<div class="text-center text-lg mb-8">Choose your preferred packaging style.</div>
+			<div class="overflow-x-auto scrollbar-hide mb-6" id="packaging-slider-container">
+					<div class="flex flex-nowrap gap-8 min-w-full px-2" id="packaging-slider-row">
+					{% if customization and customization.packaging_images.all %}
+						{% for packaging in customization.packaging_images.all %}
+							<div class="flex flex-col items-center flex-shrink-0">
+								<img src="{{ packaging.image.url }}" class="w-[250px] h-[243px] object-contain mb-2" alt="{{ packaging.name }}">
+								<span class="font-medium">{{ packaging.name }}</span>
+							</div>
+						{% empty %}
+							<div class="text-gray-400">No packaging options available.</div>
+						{% endfor %}
+					{% else %}
+						<div class="text-gray-400">No packaging options available.</div>
+					{% endif %}
+				</div>
+			</div>
+		</div>
+
+        <div class="flex justify-center gap-4 mt-4">
+				<a href="{% url 'contact' %}" class="bg-purple-700 hover:bg-purple-800 text-white font-semibold py-2 px-6 rounded transition-colors">Tell Us What You Need </a>
+				<a href="{% url 'shop' %}" class="border-2 border-purple-700 text-purple-700 font-semibold py-2 px-6 rounded transition-colors hover:bg-purple-50">View More Products</a>
+		</div>
+
+		   <!-- Makeup Line With Us Section -->
+		<section class="bg-white py-20">
+			<div class="max-w-7xl mx-auto px-6">
+				<!-- Section Header -->
+				<div class="text-center space-y-6 mb-16">
+					<h2 class="text-4xl lg:text-5xl font-bold text-gray-900 text-balance">How It Works</h2>
+				</div>
+
+				<!-- Process Steps Grid -->
+				<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+					{% for step in category.how_it_works.all|dictsort:"id" %}
+					<div class="text-center space-y-4">
+						<div class="relative">
+							{% if step.image %}
+								<img src="{{ step.image.url }}" alt="{{ step.title }}" class="w-full h-48 object-cover rounded-lg shadow-md" />
+							{% else %}
+								<div class="w-full h-48 flex items-center justify-center bg-gray-100 rounded-lg text-gray-400">No Image</div>
+							{% endif %}
+							<div class="absolute -bottom-4 left-1/2 transform -translate-x-1/2">
+								<div class="w-8 h-8 bg-purple-600 text-white rounded-full flex items-center justify-center font-bold text-sm">
+									{{ forloop.counter }}
+								</div>
+							</div>
+						</div>
+						<div class="pt-4 space-y-2">
+							<h3 class="text-lg font-bold text-gray-900">{{ step.title }}</h3>
+							<p class="text-sm text-gray-600">{{ step.description }}</p>
+						</div>
+					</div>
+					{% empty %}
+					<div class="col-span-full text-center text-gray-500 py-12">No steps found for this category.</div>
+					{% endfor %}
+				</div>
+			</div>
+		</section>
+	</div>
+</div>
+
+<script>
+// Toggle menu logic
+document.addEventListener('DOMContentLoaded', function() {
+	const tabs = document.querySelectorAll('.toggle-tab');
+	const contents = document.querySelectorAll('.tab-content');
+	tabs.forEach(tab => {
+		tab.addEventListener('click', function() {
+			tabs.forEach(t => t.classList.remove('text-purple-700', 'border-purple-700'));
+			tabs.forEach(t => t.classList.add('text-gray-700', 'border-transparent'));
+			this.classList.add('text-purple-700', 'border-purple-700');
+			this.classList.remove('text-gray-700', 'border-transparent');
+			contents.forEach(c => c.classList.add('hidden'));
+			document.getElementById('tab-content-' + this.dataset.tab).classList.remove('hidden');
+		});
+	});
+});
+</script>
+
+{% endblock %}

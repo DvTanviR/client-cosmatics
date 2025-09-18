@@ -1,0 +1,364 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BEYOND - Makeup Manufacturer</title>
+    <meta name="description" content="A Reliable Private Label Makeup Manufacturer For You">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Belleza&display=swap" rel="stylesheet">
+
+    <!-- Custom CSS for scrollbar hide and other utilities -->
+    <style>
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        
+        /* Custom CSS variables for consistent styling */
+        :root {
+            --background: oklch(1 0 0);
+            --foreground: oklch(0.145 0 0);
+            --card: oklch(1 0 0);
+            --card-foreground: oklch(0.145 0 0);
+            --popover: oklch(1 0 0);
+            --popover-foreground: oklch(0.145 0 0);
+            --primary: oklch(0.205 0 0);
+            --primary-foreground: oklch(0.985 0 0);
+            --secondary: oklch(0.97 0 0);
+            --secondary-foreground: oklch(0.205 0 0);
+            --muted: oklch(0.97 0 0);
+            --muted-foreground: oklch(0.556 0 0);
+            --accent: oklch(0.97 0 0);
+            --accent-foreground: oklch(0.205 0 0);
+            --destructive: oklch(0.577 0.245 27.325);
+            --destructive-foreground: oklch(0.577 0.245 27.325);
+            --border: oklch(0.922 0 0);
+            --input: oklch(0.922 0 0);
+            --ring: oklch(0.708 0 0);
+            --chart-1: oklch(0.646 0.222 41.116);
+            --chart-2: oklch(0.6 0.118 184.704);
+            --chart-3: oklch(0.398 0.07 227.392);
+            --chart-4: oklch(0.828 0.189 84.429);
+            --chart-5: oklch(0.769 0.188 70.08);
+            --radius: 0.625rem;
+            --sidebar: oklch(0.985 0 0);
+            --sidebar-foreground: oklch(0.145 0 0);
+            --sidebar-primary: oklch(0.205 0 0);
+            --sidebar-primary-foreground: oklch(0.985 0 0);
+            --sidebar-accent: oklch(0.97 0 0);
+            --sidebar-accent-foreground: oklch(0.205 0 0);
+            --sidebar-border: oklch(0.922 0 0);
+            --sidebar-ring: oklch(0.708 0 0);
+        }
+
+        .dark {
+            --background: oklch(0.145 0 0);
+            --foreground: oklch(0.985 0 0);
+            --card: oklch(0.145 0 0);
+            --card-foreground: oklch(0.985 0 0);
+            --popover: oklch(0.145 0 0);
+            --popover-foreground: oklch(0.985 0 0);
+            --primary: oklch(0.985 0 0);
+            --primary-foreground: oklch(0.205 0 0);
+            --secondary: oklch(0.269 0 0);
+            --secondary-foreground: oklch(0.985 0 0);
+            --muted: oklch(0.269 0 0);
+            --muted-foreground: oklch(0.708 0 0);
+            --accent: oklch(0.269 0 0);
+            --accent-foreground: oklch(0.985 0 0);
+            --destructive: oklch(0.396 0.141 25.723);
+            --destructive-foreground: oklch(0.637 0.237 25.331);
+            --border: oklch(0.269 0 0);
+            --input: oklch(0.269 0 0);
+            --ring: oklch(0.439 0 0);
+            --chart-1: oklch(0.488 0.243 264.376);
+            --chart-2: oklch(0.696 0.17 162.48);
+            --chart-3: oklch(0.769 0.188 70.08);
+            --chart-4: oklch(0.627 0.265 303.9);
+            --chart-5: oklch(0.645 0.246 16.439);
+            --sidebar: oklch(0.205 0 0);
+            --sidebar-foreground: oklch(0.985 0 0);
+            --sidebar-primary: oklch(0.488 0.243 264.376);
+            --sidebar-primary-foreground: oklch(0.985 0 0);
+            --sidebar-accent: oklch(0.269 0 0);
+            --sidebar-accent-foreground: oklch(0.985 0 0);
+            --sidebar-border: oklch(0.269 0 0);
+            --sidebar-ring: oklch(0.439 0 0);
+        }
+
+        .belleza-regular {
+            font-family: "Belleza", sans-serif;
+            font-weight: 400;
+            font-style: normal;
+            }
+        .body{
+            font-family: 'belleza';
+        }
+
+    </style>
+</head>
+<body class="belleza-regular antialiased"  x-data="shopApp()">
+    
+    <div class="min-h-screen bg-white">
+        <!-- Navigation -->
+        <nav class="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+            <div class="flex items-center space-x-2">
+                <div class="w-8 h-8 bg-blue-500 rounded-lg"></div>
+                <span class="text-xl font-semibold text-gray-900">BEYOND</span>
+            </div>
+
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="{% url 'home' %}" class="text-gray-600 hover:text-gray-900 transition-colors">Home</a>
+                <a href="{% url 'about' %}" class="text-gray-600 hover:text-gray-900 transition-colors">About Us</a>
+
+                <!-- LIPS Dropdown -->
+                <div class="relative group">
+                    <button class="text-gray-600 hover:text-gray-900 transition-colors focus:outline-none">Lips <i class="fa fa-chevron-down text-xs ml-1"></i></button>
+                    <div class="absolute left-0 mt-2 w-40 bg-white border border-gray-100 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible group-focus-within:opacity-100 group-focus-within:visible transition-all z-50">
+                        <a href="{% url 'category_products' 1 %}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Lipsticks</a>
+                        <a href="{% url 'category_products' 6 %}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Lip Gloss</a>
+                        <a href="{% url 'category_products' 7 %}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Lip Liner</a>
+                        <a href="{% url 'category_products' 8 %}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Lip Balm</a>
+                    </div>
+                </div>
+                <!-- EYES Dropdown -->
+                <div class="relative group">
+                    <button class="text-gray-600 hover:text-gray-900 transition-colors focus:outline-none">Eyes <i class="fa fa-chevron-down text-xs ml-1"></i></button>
+                    <div class="absolute left-0 mt-2 w-40 bg-white border border-gray-100 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible group-focus-within:opacity-100 group-focus-within:visible transition-all z-50">
+                        <a href="{% url 'category_products' 9 %}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Eye Shadow</a>
+                        <a href="{% url 'category_products' 10 %}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Eyeliner</a>
+                        <a href="{% url 'category_products' 11 %}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Mascara</a>
+                    </div>
+                </div>
+                <!-- FACE Dropdown -->
+                <div class="relative group">
+                    <button class="text-gray-600 hover:text-gray-900 transition-colors focus:outline-none">Face <i class="fa fa-chevron-down text-xs ml-1"></i></button>
+                    <div class="absolute left-0 mt-2 w-40 bg-white border border-gray-100 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible group-focus-within:opacity-100 group-focus-within:visible transition-all z-50">
+                        <a href="{% url 'category_products' 12 %}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Foundation</a>
+                        <a href="{% url 'category_products' 13 %}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Highlighter</a>
+                        <a href="{% url 'category_products' 14 %}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Blush & Bronzer</a>
+                        <a href="{% url 'category_products' 15 %}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Concealer</a>
+                    </div>
+                </div>
+                <!-- SKINCARE Dropdown -->
+                <div class="relative group">
+                    <button class="text-gray-600 hover:text-gray-900 transition-colors focus:outline-none">Skincare <i class="fa fa-chevron-down text-xs ml-1"></i></button>
+                    <div class="absolute left-0 mt-2 w-40 bg-white border border-gray-100 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible group-focus-within:opacity-100 group-focus-within:visible transition-all z-50">
+                        <a href="{% url 'category_products' 16 %}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Serums</a>
+                        <a href="{% url 'category_products' 17 %}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Moisturisers</a>
+                        <a href="{% url 'category_products' 18 %}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Toners & Mists</a>
+                        <a href="{% url 'category_products' 19 %}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Lotions</a>
+                    </div>
+                </div>
+
+                <a href="{% url 'shop' %}" class="text-gray-600 hover:text-gray-900 transition-colors">Shop</a>
+                <a href="{% url 'contact' %}" class="text-gray-600 hover:text-gray-900 transition-colors">Contact</a>
+            </div>
+
+            <div class="flex items-center space-x-4">
+                <!-- Wishlist Icon with Count -->
+                <a href="{% url 'wishlist' %}" class="relative flex items-center">
+                    <i class="fa-regular fa-heart text-2xl text-gray-600 hover:text-red-500 transition-colors"></i>
+                    <span id="wishlistCount" class="absolute -top-2 -right-2 bg-red-600 text-white text-[10px] font-semibold rounded-full px-1 py-0.5 min-w-[16px] text-center">
+                        0
+                    </span>
+                </a>
+                <select class="border border-gray-200 rounded-md px-3 py-1 text-sm text-gray-600">
+                    <option>English</option>
+                </select>
+            </div>
+        </nav>
+
+        {% block content %}
+        {% endblock %}
+
+           <!-- Footer -->
+        <footer class="bg-gray-900 text-white py-16">
+            <div class="max-w-7xl mx-auto px-6">
+                <!-- Footer Links Grid -->
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 mb-12">
+                    <!-- INFO Column -->
+                    <div class="space-y-4">
+                        <h3 class="text-lg font-semibold text-white">INFO</h3>
+                        <div class="space-y-3">
+                            <a href="#" class="block text-gray-300 hover:text-white transition-colors text-sm">Home</a>
+                            <a href="#" class="block text-gray-300 hover:text-white transition-colors text-sm">News</a>
+                            <a href="#" class="block text-gray-300 hover:text-white transition-colors text-sm">Terms & Conditions</a>
+                            <a href="#" class="block text-gray-300 hover:text-white transition-colors text-sm">Privacy Policy</a>
+                        </div>
+                    </div>
+
+                    <!-- LIPS MAKEUP Column -->
+                    <div class="space-y-4">
+                        <h3 class="text-lg font-semibold text-white">LIPS MAKEUP</h3>
+                        <div class="space-y-3">
+                            <a href="#" class="block text-gray-300 hover:text-white transition-colors text-sm">Lipsticks</a>
+                            <a href="#" class="block text-gray-300 hover:text-white transition-colors text-sm">Lip Gloss</a>
+                            <a href="#" class="block text-gray-300 hover:text-white transition-colors text-sm">Lip Liner</a>
+                            <a href="#" class="block text-gray-300 hover:text-white transition-colors text-sm">Lip Balm</a>
+                        </div>
+                    </div>
+
+                    <!-- EYES MAKEUP Column -->
+                    <div class="space-y-4">
+                        <h3 class="text-lg font-semibold text-white">EYES MAKEUP</h3>
+                        <div class="space-y-3">
+                            <a href="#" class="block text-gray-300 hover:text-white transition-colors text-sm">Eye Shadow</a>
+                            <a href="#" class="block text-gray-300 hover:text-white transition-colors text-sm">Eyeliner</a>
+                            <a href="#" class="block text-gray-300 hover:text-white transition-colors text-sm">Mascara</a>
+                        </div>
+                    </div>
+
+                    <!-- FACE MAKEUP Column -->
+                    <div class="space-y-4">
+                        <h3 class="text-lg font-semibold text-white">FACE MAKEUP</h3>
+                        <div class="space-y-3">
+                            <a href="#" class="block text-gray-300 hover:text-white transition-colors text-sm">Foundation</a>
+                            <a href="#" class="block text-gray-300 hover:text-white transition-colors text-sm">Highlighter</a>
+                            <a href="#" class="block text-gray-300 hover:text-white transition-colors text-sm">Blush & Bronzer</a>
+                            <a href="#" class="block text-gray-300 hover:text-white transition-colors text-sm">Concealer</a>
+                        </div>
+                    </div>
+
+                    <!-- SKINCARE Column -->
+                    <div class="space-y-4">
+                        <h3 class="text-lg font-semibold text-white">SKINCARE</h3>
+                        <div class="space-y-3">
+                            <a href="#" class="block text-gray-300 hover:text-white transition-colors text-sm">Serums</a>
+                            <a href="#" class="block text-gray-300 hover:text-white transition-colors text-sm">Moisturisers</a>
+                            <a href="#" class="block text-gray-300 hover:text-white transition-colors text-sm">Toners & Mists</a>
+                            <a href="#" class="block text-gray-300 hover:text-white transition-colors text-sm">Lotions</a>
+                        </div>
+                    </div>
+
+                    <!-- WHATSAPP Column -->
+                    <div class="space-y-4">
+                        <h3 class="text-lg font-semibold text-white">WHATSAPP</h3>
+                        <div class="space-y-4">
+                            <!-- QR Code -->
+                            <div class="w-20 h-20 bg-white rounded-lg flex items-center justify-center">
+                                <div class="w-16 h-16 bg-gray-900 rounded grid grid-cols-4 gap-px p-1">
+                                    <!-- Simple QR code pattern -->
+                                    <div class="w-full h-full bg-white"></div>
+                                    <div class="w-full h-full bg-gray-900"></div>
+                                    <div class="w-full h-full bg-white"></div>
+                                    <div class="w-full h-full bg-white"></div>
+                                    <div class="w-full h-full bg-gray-900"></div>
+                                    <div class="w-full h-full bg-gray-900"></div>
+                                    <div class="w-full h-full bg-white"></div>
+                                    <div class="w-full h-full bg-white"></div>
+                                    <div class="w-full h-full bg-white"></div>
+                                    <div class="w-full h-full bg-gray-900"></div>
+                                    <div class="w-full h-full bg-white"></div>
+                                    <div class="w-full h-full bg-white"></div>
+                                    <div class="w-full h-full bg-gray-900"></div>
+                                    <div class="w-full h-full bg-white"></div>
+                                    <div class="w-full h-full bg-gray-900"></div>
+                                    <div class="w-full h-full bg-white"></div>
+                                </div>
+                            </div>
+
+                            <!-- Social Media Icons -->
+                            <div class="flex space-x-3">
+                                <!-- Facebook -->
+                                <a
+                                    href="#"
+                                    class="w-8 h-8 bg-blue-600 rounded flex items-center justify-center hover:bg-blue-700 transition-colors"
+                                >
+                                    <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+                                    </svg>
+                                </a>
+
+                                <!-- Instagram -->
+                                <a
+                                    href="#"
+                                    class="w-8 h-8 bg-pink-600 rounded flex items-center justify-center hover:bg-pink-700 transition-colors"
+                                >
+                                    <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+                                    </svg>
+                                </a>
+
+                                <!-- TikTok -->
+                                <a
+                                    href="#"
+                                    class="w-8 h-8 bg-gray-800 rounded flex items-center justify-center hover:bg-gray-700 transition-colors"
+                                >
+                                    <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z" />
+                                    </svg>
+                                </a>
+
+                                <!-- YouTube -->
+                                <a
+                                    href="#"
+                                    class="w-8 h-8 bg-red-600 rounded flex items-center justify-center hover:bg-red-700 transition-colors"
+                                >
+                                    <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+                                    </svg>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer Bottom -->
+                <div class="border-t border-gray-700 pt-8">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center">
+                                <span class="text-white font-bold text-sm">B</span>
+                            </div>
+                            <span class="text-gray-300 text-sm">Copyright 2025 © BEYOND</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+</body>
+<script>
+// Update wishlist count in navbar in real time
+function updateWishlistCount() {
+    var count = 0;
+    try {
+        var wishlist = JSON.parse(localStorage.getItem('wishlist') || '[]');
+        count = wishlist.length;
+    } catch (e) {}
+    var el = document.getElementById('wishlistCount');
+    if (el) el.textContent = count;
+}
+// Listen for changes to localStorage (from other tabs/windows)
+window.addEventListener('storage', function(e) {
+    if (e.key === 'wishlist') updateWishlistCount();
+});
+// Update on page load and every time the DOM changes wishlist
+document.addEventListener('DOMContentLoaded', function() {
+    updateWishlistCount();
+    // Patch push/remove to update count after wishlist changes
+    var origSetItem = localStorage.setItem;
+    localStorage.setItem = function(key, value) {
+        origSetItem.apply(this, arguments);
+        if (key === 'wishlist') updateWishlistCount();
+    };
+});
+</script>
+</html>
