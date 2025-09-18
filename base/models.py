@@ -128,7 +128,7 @@ class Product(models.Model):
 	description = CKEditor5Field(blank=True)
 	features = models.ManyToManyField('productFeatures', blank=True, related_name='products', help_text='Key features or benefits')
 	images = models.ManyToManyField('ProductImage', blank=True, related_name='products')
-	ingredients = models.TextField(blank=True, help_text='List of ingredients')
+	# ingredients = models.TextField(blank=True, help_text='List of ingredients')
 	# min_order_quantity = models.PositiveIntegerField(default=100)
 	packaging_options = models.ManyToManyField('PackagingOption', blank=True, related_name='products', help_text='Bottle, jar, tube, etc.')
 	color_options = models.ManyToManyField('ColorShade', blank=True, related_name='products', help_text='Available shades/colors')
