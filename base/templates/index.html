@@ -249,108 +249,30 @@
 
                 <!-- Categories Grid -->
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                    <!-- LIPS Category -->
+                    {% for main_cat in main_categories %}
                     <div class="group cursor-pointer">
                         <div class="bg-white rounded-2xl overflow-hidden shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
                             <!-- Category Image -->
-                            <div class="aspect-square bg-gradient-to-br from-pink-50 to-rose-100 flex items-center justify-center relative overflow-hidden">
-                                <img
-                                    src="{% static 'luxury-lipstick-collection-with-various-shades.jpg' %}"
-                                    alt="Lips Category"
-                                    class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                                />
+                            <div class="aspect-square flex items-center justify-center relative overflow-hidden">
+                                {% if main_cat.image %}
+                                    <img src="{{ main_cat.image.url }}" alt="{{ main_cat.name }} Category" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" />
+                                {% else %}
+                                    <div class="w-full h-full bg-gray-100 flex items-center justify-center">No Image</div>
+                                {% endif %}
                                 <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300"></div>
                             </div>
-
                             <!-- Category Content -->
                             <div class="p-6 space-y-4">
-                                <h3 class="text-xl font-bold text-gray-900 text-center">LIPS</h3>
+                                <h3 class="text-xl font-bold text-gray-900 text-center">{{ main_cat.name|upper }}</h3>
                                 <div class="space-y-2">
-                                    <div class="text-sm text-gray-600 hover:text-purple-600 transition-colors cursor-pointer">Lipsticks</div>
-                                    <div class="text-sm text-gray-600 hover:text-purple-600 transition-colors cursor-pointer">Lip Gloss</div>
-                                    <div class="text-sm text-gray-600 hover:text-purple-600 transition-colors cursor-pointer">Lip Balm</div>
-                                    <div class="text-sm text-gray-600 hover:text-purple-600 transition-colors cursor-pointer">Lip Liner</div>
+                                    {% for subcat in main_cat.subcategories.all %}
+                                    <a href="{% url 'category_products' subcat.id %}" class="text-sm text-gray-600 hover:text-purple-600 transition-colors cursor-pointer">{{ subcat.name }}</a>
+                                    {% endfor %}
                                 </div>
                             </div>
                         </div>
                     </div>
-
-                    <!-- EYES Category -->
-                    <div class="group cursor-pointer">
-                        <div class="bg-white rounded-2xl overflow-hidden shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-700 ease-in-out hover:-translate-y-2">
-                            <!-- Category Image -->
-                            <div class="aspect-square bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center relative overflow-hidden">
-                                <img
-                                    src="{% static 'professional-eye-makeup-with-eyeshadow-palette-and.jpg' %}"
-                                    alt="Eyes Category"
-                                    class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                                />
-                                <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300"></div>
-                            </div>
-
-                            <!-- Category Content -->
-                            <div class="p-6 space-y-4">
-                                <h3 class="text-xl font-bold text-gray-900 text-center">EYES</h3>
-                                <div class="space-y-2">
-                                    <div class="text-sm text-gray-600 hover:text-purple-600 transition-colors cursor-pointer">Eye Shadow</div>
-                                    <div class="text-sm text-gray-600 hover:text-purple-600 transition-colors cursor-pointer">Eyeliner</div>
-                                    <div class="text-sm text-gray-600 hover:text-purple-600 transition-colors cursor-pointer">Mascara</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- FACE Category -->
-                    <div class="group cursor-pointer">
-                        <div class="bg-white rounded-2xl overflow-hidden shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
-                            <!-- Category Image -->
-                            <div class="aspect-square bg-gradient-to-br from-amber-50 to-orange-100 flex items-center justify-center relative overflow-hidden">
-                                <img
-                                    src="{% static 'face-makeup-products-foundation-concealer-and-brus.jpg' %}"
-                                    alt="Face Category"
-                                    class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                                />
-                                <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300"></div>
-                            </div>
-
-                            <!-- Category Content -->
-                            <div class="p-6 space-y-4">
-                                <h3 class="text-xl font-bold text-gray-900 text-center">FACE</h3>
-                                <div class="space-y-2">
-                                    <div class="text-sm text-gray-600 hover:text-purple-600 transition-colors cursor-pointer">Foundation</div>
-                                    <div class="text-sm text-gray-600 hover:text-purple-600 transition-colors cursor-pointer">Highlighter</div>
-                                    <div class="text-sm text-gray-600 hover:text-purple-600 transition-colors cursor-pointer">Blush & Bronzer</div>
-                                    <div class="text-sm text-gray-600 hover:text-purple-600 transition-colors cursor-pointer">Concealer</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- SKINCARE Category -->
-                    <div class="group cursor-pointer">
-                        <div class="bg-white rounded-2xl overflow-hidden shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
-                            <!-- Category Image -->
-                            <div class="aspect-square bg-gradient-to-br from-green-50 to-emerald-100 flex items-center justify-center relative overflow-hidden">
-                                <img
-                                    src="{% static 'luxury-skincare-bottles-serums-and-moisturizers.jpg' %}"
-                                    alt="Skincare Category"
-                                    class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                                />
-                                <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300"></div>
-                            </div>
-
-                            <!-- Category Content -->
-                            <div class="p-6 space-y-4">
-                                <h3 class="text-xl font-bold text-gray-900 text-center">SKINCARE</h3>
-                                <div class="space-y-2">
-                                    <div class="text-sm text-gray-600 hover:text-purple-600 transition-colors cursor-pointer">Serums</div>
-                                    <div class="text-sm text-gray-600 hover:text-purple-600 transition-colors cursor-pointer">Moisturisers</div>
-                                    <div class="text-sm text-gray-600 hover:text-purple-600 transition-colors cursor-pointer">Toners & Mists</div>
-                                    <div class="text-sm text-gray-600 hover:text-purple-600 transition-colors cursor-pointer">Lotions</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    {% endfor %}
                 </div>
             </div>
         </section>
@@ -388,6 +310,8 @@
                         </div>
                     </div>
 
+
+                    
                     <div class="text-center space-y-4">
                         <div class="relative">
                             <img

@@ -180,24 +180,6 @@
                 </div>
 
 
-                  <!-- Artwork/Spec Upload Button -->
-               
-                <!-- Fragrance Options (as input) -->
-               
-
-               
-
-                <!-- Function Options (as input) -->
-              
-                
-                <!-- Ingredients -->
-                
-                
-
-                <!-- Price Per Unit -->
-               
-                <!-- Action Buttons (static for now) -->
-
 
                 <div class="mt-6 flex flex-col w-full">
                     <label for="customizationNote" class="mb-2 text-sm font-semibold text-gray-700">Customization note:</label>
@@ -330,9 +312,75 @@
         </div>
         <script>
 // Add to Wishlist (localStorage only, with details)
+
+// Store custom color and packaging data globally before adding to wishlist
+let customColorData = null;
+let customPackData = null;
+let customSpecSheetFile = null;
+
 document.addEventListener('DOMContentLoaded', function() {
     var btn = document.getElementById('addToWishlistBtn');
     if (!btn) return;
+
+    // Custom Color Modal logic
+    var colorForm = document.getElementById('customColorForm');
+    if (colorForm) {
+        colorForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            // Get hex and pantone
+            let hex = document.getElementById('customColorHex').value;
+            let pantone = document.getElementById('pantoneNumber').value;
+            // Store custom color data
+            customColorData = {
+                hex: hex,
+                pantone: pantone
+            };
+            document.getElementById('customColorModal').style.display = 'none';
+        });
+    }
+
+    // Custom Packaging Modal logic
+    var packForm = document.getElementById('customPackForm');
+    if (packForm) {
+        packForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            let packInput = document.getElementById('customPackImage');
+            if (packInput && packInput.files.length > 0) {
+                let file = packInput.files[0];
+                // Store custom packaging file data (as base64 for now)
+                let reader = new FileReader();
+                reader.onload = function(evt) {
+                    customPackData = {
+                        name: file.name,
+                        type: file.type,
+                        data: evt.target.result // base64
+                    };
+                };
+                reader.readAsDataURL(file);
+            }
+            document.getElementById('customPackModal').style.display = 'none';
+        });
+    }
+
+    // Spec Sheet/Artwork upload logic
+    let artworkInput = document.getElementById('artworkUpload');
+    if (artworkInput) {
+        artworkInput.addEventListener('change', function(e) {
+            if (artworkInput.files.length > 0) {
+                let file = artworkInput.files[0];
+                let reader = new FileReader();
+                reader.onload = function(evt) {
+                    customSpecSheetFile = {
+                        name: file.name,
+                        type: file.type,
+                        data: evt.target.result // base64
+                    };
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    }
+
     btn.addEventListener('click', function() {
         // Get selected color details (with image)
         let colorInputs = document.querySelectorAll('input[name="wishlist_colors"]:checked');
@@ -367,17 +415,13 @@ document.addEventListener('DOMContentLoaded', function() {
             name: i.getAttribute('data-name')
         }));
 
-        // Get uploaded file name
-        let artworkInput = document.getElementById('artworkUpload');
-        let uploadedFileName = (artworkInput && artworkInput.files.length > 0) ? artworkInput.files[0].name : null;
-
         // Require at least one of each available option
-        if (allColorInputs.length > 0 && selectedColors.length === 0) {
-            alert('Please select at least one color option.');
+        if (allColorInputs.length > 0 && selectedColors.length === 0 && !customColorData) {
+            alert('Please select at least one color option or add a custom color.');
             return;
         }
-        if (allPackInputs.length > 0 && selectedPacks.length === 0) {
-            alert('Please select at least one packaging option.');
+        if (allPackInputs.length > 0 && selectedPacks.length === 0 && !customPackData) {
+            alert('Please select at least one packaging option or add a custom packaging.');
             return;
         }
         if (allPerfumeInputs.length > 0 && selectedPerfumes.length === 0) {
@@ -415,7 +459,9 @@ document.addEventListener('DOMContentLoaded', function() {
             selected_packs: selectedPacks,
             selected_perfumes: selectedPerfumes,
             selected_functions: selectedFunctions,
-            uploaded_file_name: uploadedFileName
+            custom_color: customColorData,
+            custom_packaging: customPackData,
+            custom_spec_sheet: customSpecSheetFile
         };
 
         // Get wishlist from localStorage
@@ -432,6 +478,11 @@ document.addEventListener('DOMContentLoaded', function() {
             btn.classList.remove('bg-green-600');
             btn.classList.add('bg-blue-600');
         }, 1500);
+
+        // Reset custom uploads after adding to wishlist
+        customColorData = null;
+        customPackData = null;
+        customSpecSheetFile = null;
     });
 
     // Show bigger color image modal

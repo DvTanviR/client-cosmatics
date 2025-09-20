@@ -1,23 +1,17 @@
 from django.contrib import admin
 from .models import *
 
-admin.site.register(Category)
-admin.site.register(Product)
-admin.site.register(ProductImage)
-admin.site.register(Functions)
-admin.site.register(ColorShade)
-admin.site.register(PackagingOption)
-admin.site.register(FragranceOption)
-admin.site.register(productFeatures)
+from django.utils.html import format_html, format_html_join
 
+
+
+admin.site.register(ProductImage)
+admin.site.register(productFeatures)
 admin.site.register(CustomizationColorImage)
 admin.site.register(CustomizationTextureImage)
 admin.site.register(CustomizationFunctionImage)
 admin.site.register(CustomizationPackagingImage)
-admin.site.register(Customization)
-admin.site.register(HowItworks)
 
-from django.utils.html import format_html, format_html_join
 
 class QuoteRequestAdmin(admin.ModelAdmin):
 	list_display = ('name', 'company', 'email', 'created_at')
@@ -29,7 +23,22 @@ class QuoteRequestAdmin(admin.ModelAdmin):
 			return "<i>No wishlist items</i>"
 		rows = []
 		for item in wishlist:
-			colors = ', '.join([c.get('name', '') for c in item.get('selected_colors', [])])
+			# Colors: show selected color names, and custom color hex/pantone if present
+			colors_list = [c.get('name', '') for c in item.get('selected_colors', [])]
+			custom_color = item.get('custom_color')
+			custom_color_str = ''
+			if custom_color:
+				hex_code = custom_color.get('hex', '')
+				pantone = custom_color.get('pantone', '')
+				if hex_code or pantone:
+					custom_color_str = f"Custom Color: "
+					if hex_code:
+						custom_color_str += f"Hex: <span style='color:{hex_code};font-weight:bold'>{hex_code}</span> "
+					if pantone:
+						custom_color_str += f"Pantone: <span style='font-weight:bold'>{pantone}</span>"
+			colors = ', '.join(colors_list)
+			if custom_color_str:
+				colors = (colors + '<br>' if colors else '') + custom_color_str
 			packs = ', '.join([p.get('name', '') for p in item.get('selected_packs', [])])
 			rows.append(
 				f"<tr>"
@@ -50,7 +59,7 @@ class QuoteRequestAdmin(admin.ModelAdmin):
 
 	fieldsets = (
 		(None, {
-			'fields': ('name', 'company', 'email', 'phone', 'address', 'uploaded_file', 'wishlist_data_pretty')
+			'fields': ('name', 'company', 'email', 'phone', 'address', 'custom_packaging_image', 'spec_sheet_file', 'wishlist_data_pretty')
 		}),
 	)
 

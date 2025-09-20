@@ -1,3 +1,4 @@
+
 """
 Django settings for app project.
 
@@ -39,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'base',
+    'Administration',
     'django_ckeditor_5',
 ]
 

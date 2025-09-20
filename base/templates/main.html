@@ -123,51 +123,24 @@
                 <span class="text-xl font-semibold text-gray-900">BEYOND</span>
             </div>
 
+
             <div class="hidden md:flex items-center space-x-8">
                 <a href="{% url 'home' %}" class="text-gray-600 hover:text-gray-900 transition-colors">Home</a>
                 <a href="{% url 'about' %}" class="text-gray-600 hover:text-gray-900 transition-colors">About Us</a>
-
-                <!-- LIPS Dropdown -->
+                {% for nav in nav_structure %}
                 <div class="relative group">
-                    <button class="text-gray-600 hover:text-gray-900 transition-colors focus:outline-none">Lips <i class="fa fa-chevron-down text-xs ml-1"></i></button>
+                    <button class="text-gray-600 hover:text-gray-900 transition-colors focus:outline-none">
+                        {{ nav.main.name }} <i class="fa fa-chevron-down text-xs ml-1"></i>
+                    </button>
+                    {% if nav.subs %}
                     <div class="absolute left-0 mt-2 w-40 bg-white border border-gray-100 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible group-focus-within:opacity-100 group-focus-within:visible transition-all z-50">
-                        <a href="{% url 'category_products' 1 %}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Lipsticks</a>
-                        <a href="{% url 'category_products' 6 %}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Lip Gloss</a>
-                        <a href="{% url 'category_products' 7 %}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Lip Liner</a>
-                        <a href="{% url 'category_products' 8 %}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Lip Balm</a>
+                        {% for subcat in nav.subs %}
+                        <a href="{% url 'category_products' subcat.id %}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">{{ subcat.name }}</a>
+                        {% endfor %}
                     </div>
+                    {% endif %}
                 </div>
-                <!-- EYES Dropdown -->
-                <div class="relative group">
-                    <button class="text-gray-600 hover:text-gray-900 transition-colors focus:outline-none">Eyes <i class="fa fa-chevron-down text-xs ml-1"></i></button>
-                    <div class="absolute left-0 mt-2 w-40 bg-white border border-gray-100 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible group-focus-within:opacity-100 group-focus-within:visible transition-all z-50">
-                        <a href="{% url 'category_products' 9 %}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Eye Shadow</a>
-                        <a href="{% url 'category_products' 10 %}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Eyeliner</a>
-                        <a href="{% url 'category_products' 11 %}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Mascara</a>
-                    </div>
-                </div>
-                <!-- FACE Dropdown -->
-                <div class="relative group">
-                    <button class="text-gray-600 hover:text-gray-900 transition-colors focus:outline-none">Face <i class="fa fa-chevron-down text-xs ml-1"></i></button>
-                    <div class="absolute left-0 mt-2 w-40 bg-white border border-gray-100 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible group-focus-within:opacity-100 group-focus-within:visible transition-all z-50">
-                        <a href="{% url 'category_products' 12 %}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Foundation</a>
-                        <a href="{% url 'category_products' 13 %}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Highlighter</a>
-                        <a href="{% url 'category_products' 14 %}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Blush & Bronzer</a>
-                        <a href="{% url 'category_products' 15 %}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Concealer</a>
-                    </div>
-                </div>
-                <!-- SKINCARE Dropdown -->
-                <div class="relative group">
-                    <button class="text-gray-600 hover:text-gray-900 transition-colors focus:outline-none">Skincare <i class="fa fa-chevron-down text-xs ml-1"></i></button>
-                    <div class="absolute left-0 mt-2 w-40 bg-white border border-gray-100 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible group-focus-within:opacity-100 group-focus-within:visible transition-all z-50">
-                        <a href="{% url 'category_products' 16 %}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Serums</a>
-                        <a href="{% url 'category_products' 17 %}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Moisturisers</a>
-                        <a href="{% url 'category_products' 18 %}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Toners & Mists</a>
-                        <a href="{% url 'category_products' 19 %}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Lotions</a>
-                    </div>
-                </div>
-
-                <a href="{% url 'shop' %}" class="text-gray-600 hover:text-gray-900 transition-colors">Shop</a>
+                {% endfor %}
                 <a href="{% url 'contact' %}" class="text-gray-600 hover:text-gray-900 transition-colors">Contact</a>
             </div>
 

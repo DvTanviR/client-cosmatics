@@ -10,13 +10,15 @@ from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer, Image
 from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet
+from Administration.models import *
 
 @csrf_exempt
 def SendQuote(request):
     if request.method != 'POST':
         return JsonResponse({'success': False, 'error': 'Invalid method'}, status=405)
     try:
-        import json
+        import json, base64
+        from django.core.files.base import ContentFile
         # Get data from multipart/form-data
         name = request.POST.get('name')
         company = request.POST.get('company')
@@ -28,7 +30,43 @@ def SendQuote(request):
             wishlist = json.loads(wishlist_raw)
         except Exception:
             wishlist = []
-        uploaded_file = request.FILES.get('uploaded_file')
+
+        # Prepare uploads
+        custom_color_image = None
+        custom_packaging_image = None
+        spec_sheet_file = None
+
+        # Find uploads in wishlist items (first found)
+        for item in wishlist:
+            # Custom color image (base64)
+            custom_color = item.get('custom_color')
+            if custom_color and custom_color.get('image'):
+                img_data = custom_color['image']
+                if img_data.startswith('data:'):
+                    fmt, b64 = img_data.split(';base64,')
+                    ext = fmt.split('/')[-1]
+                    custom_color_image = ContentFile(base64.b64decode(b64), name=f'custom_color.{ext}')
+                break
+        for item in wishlist:
+            # Custom packaging image (base64)
+            custom_pack = item.get('custom_packaging')
+            if custom_pack and custom_pack.get('data'):
+                img_data = custom_pack['data']
+                if img_data.startswith('data:'):
+                    fmt, b64 = img_data.split(';base64,')
+                    ext = fmt.split('/')[-1]
+                    custom_packaging_image = ContentFile(base64.b64decode(b64), name=f'custom_packaging.{ext}')
+                break
+        for item in wishlist:
+            # Spec sheet file (base64)
+            spec_file = item.get('custom_spec_sheet')
+            if spec_file and spec_file.get('data'):
+                file_data = spec_file['data']
+                if file_data.startswith('data:'):
+                    fmt, b64 = file_data.split(';base64,')
+                    ext = fmt.split('/')[-1]
+                    spec_sheet_file = ContentFile(base64.b64decode(b64), name=f'spec_sheet.{ext}')
+                break
 
         quote_obj = QuoteRequest.objects.create(
             name=name,
@@ -37,7 +75,9 @@ def SendQuote(request):
             phone=phone,
             address=address,
             wishlist_data=wishlist,
-            uploaded_file=uploaded_file
+            custom_color_image=custom_color_image,
+            custom_packaging_image=custom_packaging_image,
+            spec_sheet_file=spec_sheet_file
         )
 
         buffer = io.BytesIO()
@@ -136,14 +176,25 @@ def SendQuote(request):
 
 
 def Home(request):
-    return render(request, 'index.html')
+    # Get all MainCategory objects and their related Category objects
+    main_categories = MainCategory.objects.prefetch_related('subcategories').all()
+    # Structure: [{'main': MainCategory, 'subs': [Category, ...]}, ...]
+    nav_structure = []
+    for main_cat in main_categories:
+        subs = main_cat.subcategories.all()
+        nav_structure.append({'main': main_cat, 'subs': subs})
+    # Pass main_categories for Explore section
+    return render(request, 'index.html', {
+        'nav_structure': nav_structure,
+        'main_categories': main_categories,
+    })
 
 def About(request):
     return render(request, 'about.html')
 
 
 def Shop(request):
-    catagories = Category.objects.all()
+    catagories = MainCategory.objects.all()
     products = Product.objects.filter(is_active=True)
     catagories_heor = catagories.order_by('-id')[:5]
     # Pagination
