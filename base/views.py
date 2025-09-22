@@ -223,7 +223,7 @@ def Shop(request):
 
 def Contact(request):
     from django.core.mail import send_mail, BadHeaderError
-    from django.conf import 
+    from django.conf import settings
     main_categories = MainCategory.objects.prefetch_related('subcategories').all()
     nav_structure = []
     for main_cat in main_categories:

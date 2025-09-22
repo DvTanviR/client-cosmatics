@@ -5,7 +5,7 @@ server {
    access_log /var/log/nginx/website-name.log;
 
    location /static/ {
-       alias /opt/myproject/myproject/app/static/;
+       alias /root/apps/client-cosmatics/staticfiles/;
    }
 
    location / {
