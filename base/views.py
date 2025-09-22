@@ -190,7 +190,12 @@ def Home(request):
     })
 
 def About(request):
-    return render(request, 'about.html')
+    main_categories = MainCategory.objects.prefetch_related('subcategories').all()
+    nav_structure = []
+    for main_cat in main_categories:
+        subs = main_cat.subcategories.all()
+        nav_structure.append({'main': main_cat, 'subs': subs})
+    return render(request, 'about.html', {'nav_structure': nav_structure,})
 
 
 def Shop(request):
@@ -201,18 +206,29 @@ def Shop(request):
     page_number = request.GET.get('page', 1)
     paginator = Paginator(products, 30)
     page_obj = paginator.get_page(page_number)
+    main_categories = MainCategory.objects.prefetch_related('subcategories').all()
+    nav_structure = []
+    for main_cat in main_categories:
+        subs = main_cat.subcategories.all()
+        nav_structure.append({'main': main_cat, 'subs': subs})
     context = {
         'catagories': catagories,
         'products': page_obj.object_list,
         'catagories_heor': catagories_heor,
         'page_obj': page_obj,
         'paginator': paginator,
+        'nav_structure': nav_structure,
     }
     return render(request, 'shop.html', context)
 
 def Contact(request):
     from django.core.mail import send_mail, BadHeaderError
-    from django.conf import settings
+    from django.conf import 
+    main_categories = MainCategory.objects.prefetch_related('subcategories').all()
+    nav_structure = []
+    for main_cat in main_categories:
+        subs = main_cat.subcategories.all()
+        nav_structure.append({'main': main_cat, 'subs': subs})
     message_sent = False
     error_message = None
     if request.method == 'POST':
@@ -231,21 +247,37 @@ def Contact(request):
                 error_message = str(e)
         else:
             error_message = "Please fill out all fields."
-    return render(request, 'contact.html', {'message_sent': message_sent, 'error_message': error_message})
+    return render(request, 'contact.html', {'message_sent': message_sent, 'error_message': error_message, 'nav_structure': nav_structure,})
 
 def Services(request):
-    return render(request, 'services.html')
+    main_categories = MainCategory.objects.prefetch_related('subcategories').all()
+    nav_structure = []
+    for main_cat in main_categories:
+        subs = main_cat.subcategories.all()
+        nav_structure.append({'main': main_cat, 'subs': subs})
+    return render(request, 'services.html', {'nav_structure': nav_structure})
 
 def ProductDetail(request, product_id):
+    main_categories = MainCategory.objects.prefetch_related('subcategories').all()
+    nav_structure = []
+    for main_cat in main_categories:
+        subs = main_cat.subcategories.all()
+        nav_structure.append({'main': main_cat, 'subs': subs})
     product = Product.objects.get(id=product_id)
     context = {
         'product': product,
+        'nav_structure': nav_structure,
     }
     return render(request, 'product.html', context)
 
 
 def Wishlist(request):
-    return render(request, 'wishlist.html')
+    main_categories = MainCategory.objects.prefetch_related('subcategories').all()
+    nav_structure = []
+    for main_cat in main_categories:
+        subs = main_cat.subcategories.all()
+        nav_structure.append({'main': main_cat, 'subs': subs})
+    return render(request, 'wishlist.html', {'nav_structure': nav_structure,})
 
 
 def CatagoryPage(request, category_id):
@@ -254,7 +286,11 @@ def CatagoryPage(request, category_id):
 
     # Get the first Customization object for this category (if any)
     customization = category.customizations.first()
-
+    main_categories = MainCategory.objects.prefetch_related('subcategories').all()
+    nav_structure = []
+    for main_cat in main_categories:
+        subs = main_cat.subcategories.all()
+        nav_structure.append({'main': main_cat, 'subs': subs})
     # Pagination
     page_number = request.GET.get('page', 1)
     paginator = Paginator(products, 30)
@@ -265,5 +301,6 @@ def CatagoryPage(request, category_id):
         'page_obj': page_obj,
         'paginator': paginator,
         'customization': customization,
+        'nav_structure': nav_structure,
     }
     return render(request, 'catagory.html', context)
