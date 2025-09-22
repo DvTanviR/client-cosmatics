@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-^t-1e7!l$h^1xnz#ltz!j6j_v2uhst@dn86d&b%%yy9v+m=%f)
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ["beyondcosmetics.us", "www.beyondcosmetics.us"]
 
 
 # Application definition
@@ -43,6 +43,14 @@ INSTALLED_APPS = [
     'Administration',
     'django_ckeditor_5',
 ]
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://beyondcosmetics.us",
+    "https://www.beyondcosmetics.us",
+    "http://beyondcosmetics.us",
+    "http://www.beyondcosmetics.us",
+]
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
