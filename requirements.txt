@@ -1,1 +1,1 @@
-Django django-ckeditor-5 requests reportlab whitenoise
+Django django-ckeditor-5 requests reportlab whitenoise   
