@@ -77,11 +77,11 @@
 
 
                 <!-- Color Options (from Customization color_images) -->
-                {% if product.category.customizations.first.color_images.all %}
+                {% if product.color_images.all %}
                 <div>
                     <h3 class="text-sm font-medium text-gray-900 mb-3">Available Shades:</h3>
                     <div class="flex flex-wrap gap-2">
-                        {% for color in product.category.customizations.first.color_images.all %}
+                        {% for color in product.color_images.all %}
                         <div class="">
                         <label style="cursor:pointer;" class="flex flex-col items-center gap-1 relative">
                             <input type="checkbox" name="wishlist_colors" value="{{ color.id }}" data-name="{{ color.name }}" {% if color.image %}data-image="{{ color.image.url }}"{% endif %} class="peer" hidden required>
@@ -134,11 +134,12 @@
 
 
                 <!-- Packaging Options (from Customization packaging_images) -->
-                {% if product.category.customizations.first.packaging_images.all %}
+               
                 <div>
                     <h3 class="text-sm font-medium text-gray-900 mb-3">Packaging Options:</h3>
                     <div class="flex flex-wrap gap-2">
-                        {% for option in product.category.customizations.first.packaging_images.all %}
+                         {% if product.packaging_images.all %}
+                        {% for option in product.packaging_images.all %}
                          <div class="">
                         <label style="cursor:pointer;" class="flex flex-col items-center gap-1 relative">
                             <input type="radio" name="wishlist_packs" value="{{ option.id }}" data-name="{{ option.name }}" {% if option.image and option.image.url %}data-image="{{ option.image.url }}"{% endif %} class="peer" hidden required>

@@ -5,6 +5,6 @@ from .models import *
 
 admin.site.register(Category)
 admin.site.register(Product)
-admin.site.register(Customization)
+#admin.site.register(Customization)
 admin.site.register(HowItworks)
 admin.site.register(MainCategory)

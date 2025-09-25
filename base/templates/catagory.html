@@ -52,36 +52,35 @@
 									<span class="text-sm font-medium text-gray-700"></span>
 								</div>
 							</div>
-
-	<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
-		{% for product in products %}
-		<div class="group overflow-hidden bg-white border rounded-xl shadow p-4 flex flex-col hover:shadow-lg transition-all duration-300">
-			<a href="{% url 'product_detail' product.id %}" class="block">
-			{% with product.images.all|first as main_image %}
-				{% if main_image %}
-					<div class="relative aspect-[4/3] overflow-hidden mb-4">
-						<img src="{{ main_image.image.url }}" alt="{{ product.name }}" class="rounded-lg object-cover w-full h-64 group-hover:scale-105 transition-transform duration-300">
-					</div>
-				{% else %}
-					<div class="w-full h-64 flex items-center justify-center bg-gray-100 rounded-lg mb-4 text-gray-400">No Image</div>
-				{% endif %}
-			{% endwith %}
-			<div class="font-bold text-lg mb-1">{{ product.name }}</div>
-			</a>
-			<div class="text-gray-600 text-sm mb-2">{{ product.description|truncatewords:10|safe }}</div>
-			<div class="mt-auto">
-				<!-- <div class="text-xs text-gray-500 font-semibold">Price Per Unit:</div>
-				<div class="text-purple-700 font-bold text-lg">${{ product.price_per_unit }}</div> -->
-			</div>
-		</div>
-		{% empty %}
+							<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+								{% for product in products %}
+								<div class="group overflow-hidden bg-white border shadow p-4 flex flex-col hover:shadow-lg transition-all duration-300">
+									<a href="{% url 'product_detail' product.id %}" class="block">
+									{% with product.images.all|first as main_image %}
+										{% if main_image %}
+											<div class="relative w-full h-64 flex items-center justify-center bg-white mb-4">
+												<img src="{{ main_image.image.url }}" alt="{{ product.name }}" class="rounded-lg object-contain w-full h-full max-h-64 max-w-full group-hover:scale-105 transition-transform duration-300" style="background:transparent;" />
+											</div>
+										{% else %}
+											<div class="w-full h-64 flex items-center justify-center bg-gray-100 rounded-lg mb-4 text-gray-400">No Image</div>
+										{% endif %}
+									{% endwith %}
+									<div class="font-bold text-lg mb-1 item text-center">{{ product.name }}</div>
+									</a>
+									<div class="text-gray-600 text-sm mb-2">{{ product.description|truncatewords:10|safe }}</div>
+									<div class="mt-auto">
+										<!-- <div class="text-xs text-gray-500 font-semibold">Price Per Unit:</div>
+										<div class="text-purple-700 font-bold text-lg">${{ product.price_per_unit }}</div> -->
+									</div>
+								</div>
+								{% empty %}
 		<div class="col-span-full text-center text-gray-500 py-12">No products found in this category.</div>
 		{% endfor %}
 
 		<div class="col-span-full flex justify-center mt-6">
-			<a href="{% url 'shop' %}" class="bg-purple-700 hover:bg-purple-800 text-white font-semibold py-2 px-8 rounded-lg transition-colors shadow text-center">
+			<!-- <a href="{% url 'shop' %}" class="bg-purple-700 hover:bg-purple-800 text-white font-semibold py-2 px-8 rounded-lg transition-colors shadow text-center">
 				View All Products
-			</a>
+			</a> -->
 		</div>
 	</div>
 	</div>
