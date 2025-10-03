@@ -75,7 +75,6 @@ def SendQuote(request):
             phone=phone,
             address=address,
             wishlist_data=wishlist,
-            custom_color_image=custom_color_image,
             custom_packaging_image=custom_packaging_image,
             spec_sheet_file=spec_sheet_file
         )
@@ -154,22 +153,45 @@ def SendQuote(request):
         elements.append(wishlist_table)
         elements.append(Spacer(1, 18))
         quote_link = f"{request.build_absolute_uri('/admin/base/quoterequest/')}{quote_obj.id}/change/"
-        elements.append(Paragraph(f'<b>Quote Request Record:</b> <link href="{quote_link}">{quote_link}</link>', styles['Normal']))
+        # Build admin PDF (with quote record link)
+        elements_admin = list(elements)
+        elements_admin.append(Paragraph(f'<b>Quote Request Record:</b> <link href="{quote_link}">{quote_link}</link>', styles['Normal']))
+        doc.build(elements_admin)
+        pdf_data_admin = buffer.getvalue()
 
-        doc.build(elements)
-        pdf_data = buffer.getvalue()
+        # Build user PDF (without quote record link)
+        buffer_user = io.BytesIO()
+        doc_user = SimpleDocTemplate(buffer_user, pagesize=letter, rightMargin=30, leftMargin=30, topMargin=30, bottomMargin=18)
+        doc_user.build(elements)
+        pdf_data_user = buffer_user.getvalue()
 
         subject = f"Quote Request from {name} ({company})"
         body = f"Name: {name}\nCompany: {company}\nEmail: {email}\nPhone: {phone}\nAddress: {address}\n\nSee attached PDF for wishlist."
-        email_msg = EmailMessage(
+        # Send to admin
+        admin_email_msg = EmailMessage(
             subject,
             body,
-            'noreply@example.com',
-            ['tanvir99ww0@gmail.com'],
+            'no-replay@beyondcosmetics.us',
+            ['sales@beyondcosmetics.us'],
             reply_to=[email] if email else None
         )
-        email_msg.attach('quote.pdf', pdf_data, 'application/pdf')
-        email_msg.send(fail_silently=False)
+        admin_email_msg.attach('quote.pdf', pdf_data_admin, 'application/pdf')
+        admin_email_msg.send(fail_silently=False)
+
+        # Send confirmation to user
+        if email:
+            user_subject = "Your Quote Request has been received"
+            user_body = f"Dear {name},\n\nThank you for your quote request. We have received your information and will get back to you soon.\n\nPlease find attached a copy of your quote request for your records.\n\nBest regards,\nBEYOND Team"
+            user_email_msg = EmailMessage(
+                user_subject,
+                user_body,
+                'noreply@example.com',
+                [email],
+                reply_to=['sales@beyondcosmetics.us']
+            )
+            user_email_msg.attach('quote.pdf', pdf_data_user, 'application/pdf')
+            user_email_msg.send(fail_silently=False)
+
         return JsonResponse({'success': True})
     except Exception as e:
         return JsonResponse({'success': False, 'error': str(e)})
@@ -235,11 +257,12 @@ def Contact(request):
         name = request.POST.get('name')
         email = request.POST.get('email')
         message = request.POST.get('message')
+        company = request.POST.get('company')
         if name and email and message:
             subject = f"Contact Form Submission from {name}"
-            body = f"Name: {name}\nEmail: {email}\n\nMessage:\n{message}"
+            body = f"Name: {name}\nEmail: {email}\Company: {company}\n\nMessage:\n{message}"
             try:
-                send_mail(subject, body, settings.DEFAULT_FROM_EMAIL, ["tanvir99ww0@gmail.com"], fail_silently=False)
+                send_mail(subject, body, settings.DEFAULT_FROM_EMAIL, ["sales@beyondcosmetics.us"], fail_silently=False)
                 message_sent = True
             except BadHeaderError:
                 error_message = "Invalid header found."

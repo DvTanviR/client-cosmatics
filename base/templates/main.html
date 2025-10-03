@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BEYOND - Makeup Manufacturer</title>
+    <title>Beyond - Makeup Manufacturer</title>
     <meta name="description" content="A Reliable Private Label Makeup Manufacturer For You">
     
     <!-- Tailwind CSS -->
@@ -19,6 +19,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Belleza&display=swap" rel="stylesheet">
+
+    <link rel="icon" type="image/png" href="{% static 'logo.jpg' %}">
 
     <!-- Custom CSS for scrollbar hide and other utilities -->
     <style>
@@ -147,7 +149,7 @@
         }
 
         .belleza-regular {
-            font-family: "Belleza", sans-serif;
+            font-family: "Open-Sans", sans-serif;
             font-weight: 400;
             font-style: normal;
             }
@@ -161,10 +163,10 @@
     
     <div class="min-h-screen bg-white" x-data="{ mobileNavOpen: false }">
         <!-- Navigation -->
-        <nav class="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+    <nav class="sticky top-0 z-40 bg-white flex items-center justify-between px-6 py-4 border-b border-gray-100">
             <div class="flex items-center space-x-2">
-                <div class="w-8 h-8 bg-blue-500 rounded-lg"></div>
-                <span class="text-xl font-semibold text-gray-900">BEYOND</span>
+                <div class="w-10 h-10 rounded-lg"><img src="{% static 'logo.jpg' %}" alt=""></div>
+                <span class="text-xl font-semibold text-gray-900">Beyond</span>
             </div>
             <!-- Desktop Nav -->
             <div class="hidden md:flex items-center space-x-8">
@@ -184,6 +186,7 @@
                     {% endif %}
                 </div>
                 {% endfor %}
+                <a href="#" class="text-gray-600 hover:text-gray-900 transition-colors">News</a>
                 <a href="{% url 'contact' %}" class="text-gray-600 hover:text-gray-900 transition-colors">Contact</a>
             </div>
             <!-- Right Side Icons -->
@@ -264,6 +267,14 @@
                         </div>
                     </div>
                     {% endfor %}
+
+                    <div class="space-y-4">
+                        <h3 class="text-lg font-semibold text-white">Address</h3>
+                        <div class="space-y-3">
+                            <a class="block text-gray-300 hover:text-white transition-colors text-sm">3/F, Building 1. No. 1 Chuangye West Road, Liangang Industrial Area, Hongqi Town, Jinwan Distrcit, Zhuhai City, Guangdong Province, China</a>
+
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Footer Bottom -->
@@ -273,7 +284,7 @@
                             <div class="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center">
                                 <span class="text-white font-bold text-sm">B</span>
                             </div>
-                            <span class="text-gray-300 text-sm">Copyright 2025 © BEYOND</span>
+                            <span class="text-gray-300 text-sm">Copyright 2025 © Zhuhai Beyond Cosmetics</span>
                         </div>
                     </div>
                 </div>

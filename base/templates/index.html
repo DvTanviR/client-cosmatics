@@ -31,7 +31,7 @@
                                 <!-- Vegan -->
                                 <div class="flex items-center gap-2">
                                     <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-                                        <img src="{% static 'vegan.png' %}" alt="">
+                                        <img src="{% static 'vegan.jpg' %}" alt="">
                                     </div>
                                     <span class="text-sm font-medium text-gray-700">Vegan</span>
                                 </div>
@@ -39,7 +39,7 @@
                                 <!-- Free of Talc -->
                                 <div class="flex items-center gap-2">
                                     <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                                        <img src="{% static 'talk.png' %}" alt="">
+                                        <img src="{% static 'talc.jpg' %}" alt="">
                                     </div>
                                     <span class="text-sm font-medium text-gray-700">Free of Talc</span>
                                 </div>
@@ -47,7 +47,7 @@
                                 <!-- Free of Paraben -->
                                 <div class="flex items-center gap-2">
                                     <div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
-                                        <img src="{% static 'paraben.png' %}" alt="">
+                                        <img src="{% static 'par.jpg' %}" alt="">
                                     </div>
                                     <span class="text-sm font-medium text-gray-700">Free of Paraben</span>
                                 </div>
@@ -55,7 +55,7 @@
                                 <!-- Hypoallergenic -->
                                 <div class="flex items-center gap-2">
                                     <div class="w-8 h-8 bg-pink-100 rounded-full flex items-center justify-center">
-                                        <img src="{% static 'hyp.png' %}" alt="">
+                                        <img src="{% static 'hyp.jpg' %}" alt="">
                                     </div>
                                     <span class="text-sm font-medium text-gray-700">Hypoallergenic</span>
                                 </div>
@@ -63,7 +63,7 @@
                                 <!-- Cruelty Free -->
                                 <div class="flex items-center gap-2">
                                     <div class="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center">
-                                        <img src="{% static 'cute.png' %}" alt="">
+                                        <img src="{% static 'cute.jpg' %}" alt="">
                                     </div>
                                     <span class="text-sm font-medium text-gray-700">Cruelty Free</span>
                                 </div>
@@ -71,32 +71,16 @@
                             
                         </div>
 
-                        <button class="inline-flex items-center justify-center px-8 py-3 text-base font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-lg transition-colors duration-200 hover:shadow-xl">
+                        <a href="#explore" class="inline-flex items-center justify-center px-8 py-3 text-base font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-lg transition-colors duration-200 hover:shadow-xl">
                             Get Started Today
-                        </button>
+                        </a>
                     </div>
 
                     <!-- Right Visual Elements -->
                     <div class="relative">
                         <!-- Geometric platforms -->
                         <div class="relative w-full h-96">
-                            <!-- Main platform -->
-                            <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-80 h-32 bg-white rounded-2xl shadow-lg border border-gray-100"></div>
-
-                            <!-- Secondary platforms -->
-                            <div class="absolute bottom-16 left-8 w-24 h-24 bg-white rounded-xl shadow-md border border-gray-100"></div>
-                            <div class="absolute bottom-20 right-12 w-20 h-20 bg-white rounded-lg shadow-md border border-gray-100"></div>
-                            <div class="absolute top-8 left-1/3 w-16 h-16 bg-white rounded-lg shadow-sm border border-gray-100"></div>
-
-                            <!-- Minimal product representations -->
-                            <div class="absolute bottom-24 left-1/2 transform -translate-x-1/2 w-12 h-16 bg-gray-100 rounded-md"></div>
-                            <div class="absolute bottom-28 left-1/2 transform -translate-x-8 w-8 h-12 bg-gray-200 rounded-full"></div>
-                            <div class="absolute bottom-28 left-1/2 transform translate-x-4 w-10 h-8 bg-gray-150 rounded-lg"></div>
-
-                            <!-- Subtle accent elements -->
-                            <div class="absolute top-12 right-8 w-2 h-2 bg-blue-400 rounded-full"></div>
-                            <div class="absolute top-20 right-16 w-1 h-1 bg-blue-300 rounded-full"></div>
-                            <div class="absolute bottom-8 left-4 w-1.5 h-1.5 bg-blue-200 rounded-full"></div>
+                            <img src="{% static 'hero.jpg' %}" alt="" srcset="">
                         </div>
                     </div>
                 </div>
@@ -141,9 +125,9 @@
                             </div>
                         </div>
 
-                        <button class="inline-flex items-center justify-center px-8 py-3 text-base font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-lg transition-colors duration-200 hover:shadow-xl">
+                        <a href="{% url 'contact' %}" class="inline-flex items-center justify-center px-8 py-3 text-base font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-lg transition-colors duration-200 hover:shadow-xl">
                             Get In Touch With Us
-                        </button>
+                        </a>
                     </div>
 
                     <!-- Right Content - Embedded Video -->
@@ -234,7 +218,7 @@
         </section>
 
         <!-- Product Categories Section -->
-        <section class="bg-white py-20">
+        <section class="bg-white py-20" id="explore">
             <div class="max-w-7xl mx-auto px-6">
                 <!-- Section Header -->
                 <div class="text-center space-y-4 mb-16">
@@ -261,7 +245,7 @@
                                 <h3 class="text-xl font-bold text-gray-900 text-center">{{ main_cat.name|upper }}</h3>
                                 <div class="space-y-2">
                                     {% for subcat in main_cat.subcategories.all %}
-                                    <a href="{% url 'category_products' subcat.id %}" class="text-sm text-gray-600 hover:text-purple-600 transition-colors cursor-pointer">{{ subcat.name }}</a>
+                                    <a href="{% url 'category_products' subcat.id %}" class="text-lg text-gray-600 hover:text-purple-600 transition-colors cursor-pointer">{{ subcat.name }}</a><br>
                                     {% endfor %}
                                 </div>
                             </div>
@@ -277,7 +261,7 @@
             <div class="max-w-7xl mx-auto px-6">
                 <!-- Section Header -->
                 <div class="text-center space-y-6 mb-16">
-                    <h2 class="text-4xl lg:text-5xl font-bold text-gray-900 text-balance">Our Servce Solutions For Your Brand</h2>
+                    <h2 class="text-4xl lg:text-5xl font-bold text-gray-900 text-balance">Our Service Solutions For Your Brand</h2>
                     <p class="text-lg text-gray-600 max-w-3xl mx-auto">
                         Transform beauty brand vision in reality. Our expert team is ready to guide you through every step of the manufacturing process.
                     </p>
@@ -301,7 +285,7 @@
                         </div>
                         <div class="pt-4 space-y-2">
                             <h3 class="text-lg font-bold text-gray-900">Consultation</h3>
-                            <p class="text-sm text-gray-600">Discuss your needs and create custom formulations</p>
+                            <p class="text-base text-gray-600">Discuss your needs and create custom formulations</p>
                         </div>
                     </div>
 
@@ -322,7 +306,7 @@
                         </div>
                         <div class="pt-4 space-y-2">
                             <h3 class="text-lg font-bold text-gray-900">Negotiation</h3>
-                            <p class="text-sm text-gray-600">Negotiate terms, pricing, and finalize sample details for your approval</p>
+                            <p class="text-base text-gray-600">Negotiate terms, pricing, and finalize sample details for your approval</p>
                         </div>
                     </div>
 
@@ -342,7 +326,7 @@
                         </div>
                         <div class="pt-4 space-y-2">
                             <h3 class="text-lg font-bold text-gray-900">Production</h3>
-                            <p class="text-sm text-gray-600">Manufacturing with quality control at every step.</p>
+                            <p class="text-base text-gray-600">Manufacturing with quality control at every step.</p>
                         </div>
                     </div>
 
@@ -362,7 +346,7 @@
                         </div>
                         <div class="pt-4 space-y-2">
                             <h3 class="text-lg font-bold text-gray-900">Delivery</h3>
-                            <p class="text-sm text-gray-600">Your product ready for market launch.</p>
+                            <p class="text-base text-gray-600">Your product ready for market launch.</p>
                         </div>
                     </div>
                 </div>
@@ -638,10 +622,10 @@
                                     Drop us an email and get a response within 24 hours – your queries, our priority.
                                 </p>
                                 <a
-                                    href="mailto:sales@zhbeyondcosmetics.com"
+                                    href="mailto:sales@beyondcosmetics.us"
                                     class="text-blue-600 hover:text-blue-700 font-medium text-sm"
                                 >
-                                    sales@zhbeyondcosmetics.com
+                                    sales@beyondcosmetics.us
                                 </a>
                             </div>
                         </div>
@@ -706,7 +690,7 @@
                     </p>
 
                     <!-- CTA Button -->
-                    <button class="inline-flex items-center justify-center px-8 py-4 text-base font-medium text-slate-700 bg-white hover:bg-gray-50 rounded-xl shadow-lg transition-all duration-200 hover:shadow-xl hover:scale-105">
+                    <a href="#explore" class="inline-flex items-center justify-center px-8 py-4 text-base font-medium text-slate-700 bg-white hover:bg-gray-50 rounded-xl shadow-lg transition-all duration-200 hover:shadow-xl hover:scale-105">
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path
                                 stroke-linecap="round"
@@ -716,7 +700,7 @@
                             />
                         </svg>
                         Join Us
-                    </button>
+                    </a>
                 </div>
             </div>
         </section>
