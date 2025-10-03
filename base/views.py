@@ -260,7 +260,7 @@ def Contact(request):
         company = request.POST.get('company')
         if name and email and message:
             subject = f"Contact Form Submission from {name}"
-            body = f"Name: {name}\nEmail: {email}\Company: {company}\n\nMessage:\n{message}"
+            body = f"Name: {name} \nEmail: {email} \nCompany: {company} \n\nMessage:\n{message}"
             try:
                 send_mail(subject, body, settings.DEFAULT_FROM_EMAIL, ["sales@beyondcosmetics.us"], fail_silently=False)
                 message_sent = True
