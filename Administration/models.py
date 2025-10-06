@@ -28,7 +28,10 @@ class Product(models.Model):
 class Category(models.Model):
 	name = models.CharField(max_length=100, unique=True)
 	main_category = models.ForeignKey('MainCategory', on_delete=models.CASCADE, related_name='subcategories', null=True, blank=True)
-
+	banner_image = models.ImageField(upload_to='category_banners/', blank=True, null=True)
+	title = models.CharField(max_length=200, blank=True)
+	description = models.TextField(blank=True)
+	
 	def __str__(self):
 		return self.name
 	

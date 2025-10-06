@@ -3,56 +3,86 @@
 {% block content %}
 {% load static %}
 
+<!-- Hero Section using category model fields -->
+<section class="w-full py-16 mb-8" style="background-color: #f3eafd;">
+	<div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-center px-4 md:px-8 gap-8">
+		<div class="flex-shrink-0 flex items-center justify-center w-full md:w-1/2 mb-8 md:mb-0">
+			{% if category.banner_image %}
+				<img src="{{ category.banner_image.url }}" alt="Banner" class="w-[340px] h-auto object-contain rounded-lg shadow" />
+			{% else %}
+				<img src="{% static 'how_it_works/maskara.png' %}" alt="" class="w-[340px] h-auto object-contain" />
+			{% endif %}
+		</div>
+		<div class="w-full md:w-1/2 flex flex-col items-center md:items-start text-center md:text-left">
+			<h1 class="text-4xl md:text-5xl font-extrabold mb-4 leading-tight">
+				{{ category.title}}
+				{% if category.title %}
+					{{ category.title}}
+				{% else %}
+					{{ category.name }} Reimagined <br>For Your Brand!
+				{% endif %}
+			</h1>
+			<p class="text-lg md:text-xl text-gray-700 mb-8">
+				{% if category.description %}
+					{{ category.description }}
+				{% else %}
+					A timeless essential in every mackup collection, lipstick offer endless possibilities from soft neutrals bold expressive shades. As a specialized privet label manufacturer, we transform this versatile product into a custom branded solution. With thousands of proven formulas, elegant packaging options and advace white-label production we deliver high quality Lipstick tailored to your vision efficiently, beautifully and ready to market.
+				{% endif %}
+			</p>
+			<a href="#product" class="bg-purple-700 hover:bg-purple-800 text-white font-semibold py-3 px-8 rounded-lg transition-colors shadow text-center">View More</a>
+		</div>
+	</div>
+</section>
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-	<h1 class="text-4xl font-extrabold text-center mb-2 mt-4">{{category.name}} Reimagined <br>For  Your Brand!</h1>
+	<!-- <h1 class="text-4xl font-extrabold text-center mb-2 mt-4">{{category.name}} Reimagined <br>For  Your Brand!</h1>
 	<div class="text-center text-lg font-semibold mb-2 mt-2">
 		A timeless essential in every mackup collection, lipstick offer endless possibilities from soft neutrals bold expressive shades. As a specialized privet label manufacturer, we transform this versatile product into a custom branded solution. With thousands of proven formulas, elegant packaging options and advace white-label production we deliver high quality {{category.name}} tailored to your vision efficiently, beautifully and ready to market. 
-	</div>
+	</div> -->
 	<!-- <div class="text-center text-base mb-6">
 		Logo-only print; 1,000+ pcs unlock <span class="font-bold">custom color &amp; box</span> options.
 	</div> -->
 							<div class="flex flex-wrap gap-6 justify-center items-center">
 								<!-- Vegan -->
-								<div class="flex items-center gap-2">
+								<!-- <div class="flex items-center gap-2">
 									<div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
 										<img src="{% static 'vegan.png' %}" alt="" class="w-16 h-16">
 									</div>
 									<span class="text-sm font-medium text-gray-700"></span>
-								</div>
+								</div> -->
 
 								<!-- Free of Talc -->
-								<div class="flex items-center gap-2">
+								<!-- <div class="flex items-center gap-2">
 									<div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center">
 										<img src="{% static 'talk.png' %}" alt="" class="w-16 h-16">
 									</div>
 									<span class="text-sm font-medium text-gray-700"></span>
-								</div>
+								</div> -->
 
 								<!-- Free of Paraben -->
-								<div class="flex items-center gap-2">
+								<!-- <div class="flex items-center gap-2">
 									<div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center">
 										<img src="{% static 'paraben.png' %}" alt="" class="w-16 h-16">
 									</div>
 									<span class="text-sm font-medium text-gray-700"></span>
-								</div>
+								</div> -->
 
 								<!-- Hypoallergenic -->
-								<div class="flex items-center gap-2">
+								<!-- <div class="flex items-center gap-2">
 									<div class="w-16 h-16 bg-pink-100 rounded-full flex items-center justify-center">
 										<img src="{% static 'hyp.png' %}" alt="" class="w-16 h-16">
 									</div>
 									<span class="text-sm font-medium text-gray-700"></span>
-								</div>
+								</div> -->
 
 								<!-- Cruelty Free -->
-								<div class="flex items-center gap-2">
+								<!-- <div class="flex items-center gap-2">
 									<div class="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center">
 										<img src="{% static 'cute.png' %}" alt="" class="w-16 h-16">
 									</div>
 									<span class="text-sm font-medium text-gray-700"></span>
-								</div>
+								</div> -->
 							</div>
-							<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+							<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8" id="product">
 								{% for product in products %}
 								<div class="group overflow-hidden bg-white border shadow p-4 flex flex-col hover:shadow-lg transition-all duration-300">
 									<a href="{% url 'product_detail' product.id %}" class="block">
