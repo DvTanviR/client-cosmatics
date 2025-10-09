@@ -9,7 +9,7 @@
             <!-- Product Images -->
             <div class="space-y-4">
                 <div class="flex flex-col h-full justify-start" style="min-height: 100%;">
-                    <div class="bg-white rounded-lg overflow-hidden shadow-sm flex flex-col items-center flex-grow w-full" style="max-height:645px; min-height:320px;">
+                    <div class="bg-white rounded-lg shadow-sm flex flex-col items-center flex-grow w-full" style="max-height:645px; min-height:320px; overflow:visible; padding-bottom:8px;">
                         {% with product.images.all|first as main_image %}
                             {% if main_image %}
                                 <img id="mainProductImage" src="{{ main_image.image.url }}" alt="{{ product.name }}" class="object-cover w-full" style="max-height:645px; max-width:100%; display:block; margin:0 auto;">
@@ -17,14 +17,14 @@
                                 <div class="w-full flex items-center justify-center bg-gray-100 text-gray-400" style="height:645px;">No Image</div>
                             {% endif %}
                         {% endwith %}
-                    </div>
-                    <!-- Thumbnail Images: always directly under main image -->
-                    <div class="flex flex-row flex-nowrap space-x-2 overflow-x-auto mt-2 w-full justify-start">
-                        {% for image in product.images.all %}
-                            <button type="button" class="flex-shrink-0 w-20 h-20 bg-white rounded-lg overflow-hidden border-2 focus:outline-none" onclick="setMainProductImage('{{ image.image.url }}')">
-                                <img src="{{ image.image.url }}" alt="Thumbnail" class="w-full h-full object-cover">
-                            </button>
-                        {% endfor %}
+                        <!-- Thumbnail Images: always directly under main image, no extra margin -->
+                        <div class="flex flex-row flex-wrap gap-2 w-full justify-start" style="margin-top:0; padding-top:0;">
+                            {% for image in product.images.all %}
+                                <button type="button" class="w-20 h-20 bg-white rounded-lg border-2 focus:outline-none flex items-center justify-center" onclick="setMainProductImage('{{ image.image.url }}')">
+                                    <img src="{{ image.image.url }}" alt="Thumbnail" style="width:80px;height:80px;object-fit:contain;display:block;" class="rounded-md">
+                                </button>
+                            {% endfor %}
+                        </div>
                     </div>
                 </div>
         <script>
@@ -48,7 +48,7 @@
                     <p class="text-gray-600 mb-4 whitespace-pre-line">{{ product.description|safe }}</p>
                     <!-- Features Section: no grid, minimal margin below -->
                     <div class="text-left pl-2 mb-2 mt-2">
-                        <h2 class="text-sm font-medium text-gray-900 mb-3">Features: </h2>
+                        <h2 class="text-base font-bold text-black mb-3">Features: </h2>
                         <div class="flex flex-row flex-wrap gap-3">
                             {% for feature in product.features.all %}
                             <label class="flex items-center gap-2 px-3 py-2 rounded-lg bg-white  cursor-pointer transition hover:border-blue-400">
@@ -79,7 +79,7 @@
                 <!-- Color Options (from Customization color_images) -->
                 {% if product.color_images.all %}
                 <div>
-                    <h3 class="text-sm font-medium text-gray-900 mb-3">Available Shades:</h3>
+                    <h3 class="text-base font-bold text-black mb-3">Available Shades:</h3>
                     <div class="flex flex-wrap gap-2">
                         {% for color in product.color_images.all %}
                         <div class="">
@@ -136,7 +136,7 @@
                 <!-- Packaging Options (from Customization packaging_images) -->
                
                 <div>
-                    <h3 class="text-sm font-medium text-gray-900 mb-3">Packaging Options:</h3>
+                    <h3 class="text-base font-bold text-black mb-3">Packaging Options:</h3>
                     <div class="flex flex-wrap gap-2">
                          {% if product.packaging_images.all %}
                         {% for option in product.packaging_images.all %}
@@ -183,7 +183,7 @@
 
 
                 <div class="mt-6 flex flex-col w-full">
-                    <label for="customizationNote" class="mb-2 text-sm font-semibold text-gray-700">Customization note:</label>
+                    <label for="customizationNote" class="text-base font-bold text-black mb-3">Customization note:</label>
                     <textarea id="customizationNote" name="customizationNote" rows="3" placeholder="Add any specific customization instructions or notes here..." class="w-full rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 py-2 px-3 text-sm resize-none mb-4 transition-shadow shadow-sm"></textarea>
                 </div>
                 <div class="mt-0 flex flex-row items-center gap-4 w-full">

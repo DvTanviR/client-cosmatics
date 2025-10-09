@@ -85,7 +85,10 @@ document.addEventListener('DOMContentLoaded', function() {
 				});
 				const result = await response.json();
 				if (result.success) {
+					// Close modal, clear wishlist and update UI
 					closeQuoteModal();
+					localStorage.removeItem('wishlist');
+					renderWishlistTable();
 					alert('Quote request sent successfully!');
 				} else {
 					alert('Failed to send quote: ' + (result.error || 'Unknown error'));
