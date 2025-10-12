@@ -19,6 +19,31 @@ class QuoteRequest(models.Model):
 		return f"Quote from {self.name} ({self.company})"
 
 
+class QuoteAttachment(models.Model):
+	"""Attach one file per wishlist item or quote-level uploads.
+
+	This stores spec sheets, custom packaging images, or custom color images
+	associated with a QuoteRequest and optionally a product id.
+	"""
+	ATTACHMENT_TYPES = [
+		('spec_sheet', 'Spec Sheet'),
+		('custom_packaging', 'Custom Packaging'),
+		('custom_color', 'Custom Color'),
+		('other', 'Other'),
+	]
+
+	quote = models.ForeignKey(QuoteRequest, related_name='attachments', on_delete=models.CASCADE)
+	product_id = models.CharField(max_length=100, blank=True, null=True, help_text='Product id from wishlist item (if any)')
+	wishlist_item_id = models.CharField(max_length=100, blank=True, null=True, help_text='Unique wishlist item id (from localStorage)')
+	attachment_type = models.CharField(max_length=30, choices=ATTACHMENT_TYPES, default='other')
+	file = models.FileField(upload_to='quote_uploads/attachments/')
+	original_name = models.CharField(max_length=255, blank=True, null=True)
+	created_at = models.DateTimeField(auto_now_add=True)
+
+	def __str__(self):
+		return f"Attachment {self.original_name or self.file.name} for Quote {self.quote.id}"
+
+
 
 class CustomizationColorImage(models.Model):
 	name = models.CharField(max_length=100)

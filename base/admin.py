@@ -2,6 +2,7 @@ from django.contrib import admin
 from .models import *
 
 from django.utils.html import format_html, format_html_join
+from .models import QuoteAttachment
 
 
 
@@ -17,6 +18,14 @@ admin.site.register(CustomizationPackagingImage)
 class QuoteRequestAdmin(admin.ModelAdmin):
 	list_display = ('name', 'company', 'email', 'created_at')
 	readonly_fields = ('wishlist_data_pretty',)
+
+	# class QuoteAttachmentInline(admin.TabularInline):
+	# 	model = QuoteAttachment
+	# 	fields = ('product_id', 'attachment_type', 'original_name', 'file', 'created_at')
+	# 	readonly_fields = ('original_name', 'file', 'created_at')
+	# 	extra = 0
+
+	# inlines = [QuoteAttachmentInline]
 
 	def wishlist_data_pretty(self, obj):
 		wishlist = obj.wishlist_data or []
@@ -88,12 +97,40 @@ class QuoteRequestAdmin(admin.ModelAdmin):
 			if custom_pack and custom_pack.get('name'):
 				custom_pack_str = f"<div style='font-size:13px;'>Custom Packaging: <b>{custom_pack.get('name')}</b></div>"
 
+
+			# Find attachments for this wishlist item. Prefer wishlist_item_id, fall back to product_id.
+			uploaded_html = ''
+			pid = item.get('product_id') or ''
+			# frontend uses `id` (Date.now()) for each wishlist item; check that first
+			item_wid = item.get('id') or item.get('wishlist_item_id') or ''
+			attachments = None
+			if item_wid:
+				attachments = QuoteAttachment.objects.filter(quote=obj, wishlist_item_id=str(item_wid))
+			# if no attachments found by wishlist_item_id, try product_id
+			if not attachments or not attachments.exists():
+				if pid:
+					attachments = QuoteAttachment.objects.filter(quote=obj, product_id=str(pid))
+				else:
+					attachments = QuoteAttachment.objects.none()
+			if attachments.exists():
+				links = []
+				for a in attachments:
+					url = a.file.url if a.file else ''
+					name = a.original_name or (a.file.name if a.file else '')
+					if url:
+						links.append(f"<div style='margin-bottom:6px;'><a href='{url}' target='_blank'>{name}</a> <small style='color:#6b7280'>({a.get_attachment_type_display()})</small></div>")
+				if links:
+					uploaded_html = ''.join(links)
+			# fallback to uploaded_file_name text if no attachments found
+			if not uploaded_html:
+				uploaded_html = item.get('uploaded_file_name','') or ''
+
 			rows.append(
 				f"<tr>"
 				f"<td style='vertical-align:top;padding:8px;border-bottom:1px solid #e5e7eb;'><b>{item.get('product_name','-')}</b><br><a href='{item.get('product_link','')}' target='_blank' style='font-size:12px;'>Open product</a></td>"
 				f"<td style='vertical-align:top;padding:8px;border-bottom:1px solid #e5e7eb;'>{colors_html}{custom_color_str}</td>"
 				f"<td style='vertical-align:top;padding:8px;border-bottom:1px solid #e5e7eb;'>{packs_html}{custom_pack_str}</td>"
-				f"<td style='vertical-align:top;padding:8px;border-bottom:1px solid #e5e7eb;'>{item.get('uploaded_file_name','')}</td>"
+				f"<td style='vertical-align:top;padding:8px;border-bottom:1px solid #e5e7eb;'>{uploaded_html}</td>"
 				f"<td style='vertical-align:top;padding:8px;border-bottom:1px solid #e5e7eb;'>{features}</td>"
 				f"<td style='vertical-align:top;padding:8px;border-bottom:1px solid #e5e7eb;'>{item.get('customization_note','')}</td>"
 				f"</tr>"
@@ -109,7 +146,7 @@ class QuoteRequestAdmin(admin.ModelAdmin):
 
 	fieldsets = (
 		(None, {
-			'fields': ('name', 'company', 'email', 'phone', 'address', 'custom_packaging_image', 'spec_sheet_file', 'wishlist_data_pretty')
+			'fields': ('name', 'company', 'email', 'phone', 'address', 'wishlist_data_pretty')
 		}),
 	)
 

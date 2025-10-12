@@ -1,7 +1,9 @@
 import io
+import time
 import requests
 from django.shortcuts import render
 from .models import *
+from .models import QuoteAttachment
 from django.core.paginator import Paginator
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -19,6 +21,7 @@ def SendQuote(request):
     try:
         import json, base64
         from django.core.files.base import ContentFile
+
         # Get data from multipart/form-data
         name = request.POST.get('name')
         company = request.POST.get('company')
@@ -31,49 +34,10 @@ def SendQuote(request):
         except Exception:
             wishlist = []
 
-        # Prepare uploads
-        custom_color_image = None
-        custom_packaging_image = None
-        spec_sheet_file = None
+        # If client sent a direct file upload (from quote modal), capture it
+        uploaded_file = request.FILES.get('uploaded_file')
 
-        # If client sent a direct file upload (from quote modal), prefer it
-        if request.FILES.get('uploaded_file'):
-            spec_sheet_file = request.FILES.get('uploaded_file')
-
-        # Find uploads in wishlist items (first found)
-        for item in wishlist:
-            # Custom color image (base64)
-            custom_color = item.get('custom_color')
-            if custom_color and custom_color.get('image'):
-                img_data = custom_color['image']
-                if img_data.startswith('data:'):
-                    fmt, b64 = img_data.split(';base64,')
-                    ext = fmt.split('/')[-1]
-                    custom_color_image = ContentFile(base64.b64decode(b64), name=f'custom_color.{ext}')
-                break
-        for item in wishlist:
-            # Custom packaging image (base64)
-            custom_pack = item.get('custom_packaging')
-            if custom_pack and custom_pack.get('data'):
-                img_data = custom_pack['data']
-                if img_data.startswith('data:'):
-                    fmt, b64 = img_data.split(';base64,')
-                    ext = fmt.split('/')[-1]
-                    custom_packaging_image = ContentFile(base64.b64decode(b64), name=f'custom_packaging.{ext}')
-                break
-        for item in wishlist:
-            # Spec sheet file (base64)
-            spec_file = item.get('custom_spec_sheet')
-            if spec_file and spec_file.get('data'):
-                # only use base64-derived file if we don't already have an uploaded_file
-                if not spec_sheet_file:
-                    file_data = spec_file['data']
-                    if file_data.startswith('data:'):
-                        fmt, b64 = file_data.split(';base64,')
-                        ext = fmt.split('/')[-1]
-                        spec_sheet_file = ContentFile(base64.b64decode(b64), name=f'spec_sheet.{ext}')
-                    break
-
+        # Create quote record first
         quote_obj = QuoteRequest.objects.create(
             name=name,
             company=company,
@@ -81,10 +45,93 @@ def SendQuote(request):
             phone=phone,
             address=address,
             wishlist_data=wishlist,
-            custom_packaging_image=custom_packaging_image,
-            spec_sheet_file=spec_sheet_file
+            custom_packaging_image=None,
+            spec_sheet_file=None
         )
 
+        # Iterate wishlist items and save any per-item base64 uploads as QuoteAttachment
+        for item in wishlist:
+            pid = item.get('product_id') or ''
+            wishlist_item_id = item.get('id') or ''
+
+            # custom color image (data URL expected at custom_color.image)
+            custom_color = item.get('custom_color') or {}
+            img_data = custom_color.get('image')
+            if isinstance(img_data, str) and img_data.startswith('data:'):
+                try:
+                    fmt, b64 = img_data.split(';base64,')
+                    ext = fmt.split('/')[-1]
+                    data = base64.b64decode(b64)
+                    fname = f'custom_color_{wishlist_item_id or pid or quote_obj.id}_{int(time.time())}.{ext}'
+                    cf = ContentFile(data)
+                    qa = QuoteAttachment(
+                        quote=quote_obj,
+                        product_id=str(pid) if pid else None,
+                        wishlist_item_id=str(wishlist_item_id) if wishlist_item_id else None,
+                        attachment_type='custom_color',
+                        original_name=fname
+                    )
+                    qa.file.save(fname, cf, save=True)
+                except Exception:
+                    pass
+
+            # custom packaging (data URL expected at custom_packaging.data)
+            custom_pack = item.get('custom_packaging') or {}
+            pack_data = custom_pack.get('data')
+            if isinstance(pack_data, str) and pack_data.startswith('data:'):
+                try:
+                    fmt, b64 = pack_data.split(';base64,')
+                    ext = fmt.split('/')[-1]
+                    data = base64.b64decode(b64)
+                    fname = f'custom_pack_{wishlist_item_id or pid or quote_obj.id}_{int(time.time())}.{ext}'
+                    cf = ContentFile(data)
+                    qa = QuoteAttachment(
+                        quote=quote_obj,
+                        product_id=str(pid) if pid else None,
+                        wishlist_item_id=str(wishlist_item_id) if wishlist_item_id else None,
+                        attachment_type='custom_packaging',
+                        original_name=fname
+                    )
+                    qa.file.save(fname, cf, save=True)
+                except Exception:
+                    pass
+
+            # custom spec sheet (data URL expected at custom_spec_sheet.data)
+            spec_file = item.get('custom_spec_sheet') or {}
+            spec_data = spec_file.get('data')
+            if isinstance(spec_data, str) and spec_data.startswith('data:'):
+                try:
+                    fmt, b64 = spec_data.split(';base64,')
+                    ext = fmt.split('/')[-1]
+                    data = base64.b64decode(b64)
+                    fname = f'spec_sheet_{wishlist_item_id or pid or quote_obj.id}_{int(time.time())}.{ext}'
+                    cf = ContentFile(data)
+                    qa = QuoteAttachment(
+                        quote=quote_obj,
+                        product_id=str(pid) if pid else None,
+                        wishlist_item_id=str(wishlist_item_id) if wishlist_item_id else None,
+                        attachment_type='spec_sheet',
+                        original_name=fname
+                    )
+                    qa.file.save(fname, cf, save=True)
+                except Exception:
+                    pass
+
+        # Save the top-level uploaded file (from quote modal) as a quote-level attachment
+        if uploaded_file:
+            try:
+                qa = QuoteAttachment(
+                    quote=quote_obj,
+                    product_id=None,
+                    wishlist_item_id=None,
+                    attachment_type='spec_sheet',
+                    original_name=getattr(uploaded_file, 'name', '')
+                )
+                qa.file.save(getattr(uploaded_file, 'name', ''), uploaded_file, save=True)
+            except Exception:
+                pass
+
+        # Build PDFs and send emails (PDF generation uses the wishlist data stored above)
         buffer = io.BytesIO()
         doc = SimpleDocTemplate(buffer, pagesize=letter, rightMargin=30, leftMargin=30, topMargin=30, bottomMargin=18)
         elements = []
@@ -188,7 +235,6 @@ def SendQuote(request):
         if email:
             user_subject = "Your Quote Request has been received"
             user_body = f"Dear {name},\n\nThank you for your quote request. We have received your information and will get back to you soon.\n\nPlease find attached a copy of your quote request for your records.\n\nBest regards,\nBEYOND Team"
-            sender_display = 'Zhuhai Beyond Cosmetics <sales@beyondcosmetics.us>'
             user_email_msg = EmailMessage(
                 user_subject,
                 user_body,
