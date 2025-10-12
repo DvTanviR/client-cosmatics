@@ -154,8 +154,8 @@ else:
 # EMAIL_HOST_PASSWORD = 'sozvuyrxqbmoowqq'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'mail.beyondcosmetics.us'
-EMAIL_USE_TLS = True
+EMAIL_HOST = 'vps88473.inmotionhosting.com'
+EMAIL_USE_SSL = True
 EMAIL_PORT = 465
 EMAIL_HOST_USER = 'sales@beyondcosmetics.us'
 EMAIL_HOST_PASSWORD = 'Bcsales@91733'

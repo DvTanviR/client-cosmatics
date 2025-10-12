@@ -174,24 +174,25 @@ def SendQuote(request):
         subject = f"Quote Request from {name} ({company})"
         body = f"Name: {name}\nCompany: {company}\nEmail: {email}\nPhone: {phone}\nAddress: {address}\n\nSee attached PDF for wishlist."
         # Send to admin
+        sender_display = 'Zhuhai Beyond Cosmetics <sales@beyondcosmetics.us>'
         admin_email_msg = EmailMessage(
             subject,
             body,
-            'no-replay@beyondcosmetics.us',
+            sender_display,
             ['sales@beyondcosmetics.us'],
             reply_to=[email] if email else None
         )
         admin_email_msg.attach('quote.pdf', pdf_data_admin, 'application/pdf')
         admin_email_msg.send(fail_silently=False)
-
         # Send confirmation to user
         if email:
             user_subject = "Your Quote Request has been received"
             user_body = f"Dear {name},\n\nThank you for your quote request. We have received your information and will get back to you soon.\n\nPlease find attached a copy of your quote request for your records.\n\nBest regards,\nBEYOND Team"
+            sender_display = 'Zhuhai Beyond Cosmetics <sales@beyondcosmetics.us>'
             user_email_msg = EmailMessage(
                 user_subject,
                 user_body,
-                'noreply@example.com',
+                sender_display,
                 [email],
                 reply_to=['sales@beyondcosmetics.us']
             )
