@@ -4,8 +4,19 @@
 
 {% block content %}
 {% load static %}
+        <style>
+        /* Hero background: mobile first uses mb.png, desktop (lg) uses herobg.jpg */
+        .hero-bg {
+            background: url('{% static "mb.png" %}') center center / cover no-repeat;
+        }
+        @media (min-width: 1024px) {
+            .hero-bg {
+                background: url('{% static "herobg.jpg" %}') center center / cover no-repeat;
+            }
+        }
+        </style>
         <!-- Hero Section -->
-        <main class="relative overflow-hidden" style="background: url('{% static 'herobg.jpg' %}') center center / cover no-repeat;">
+        <main class="relative overflow-hidden hero-bg">
             <div class="absolute inset-0 w-full h-full" style=""></div>
             <div class="relative max-w-7xl mx-auto px-6 py-20">
                 <div class="grid lg:grid-cols-2 gap-12 items-center">

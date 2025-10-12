@@ -84,7 +84,7 @@
                         {% for color in product.color_images.all %}
                         <div class="">
                         <label style="cursor:pointer;" class="flex flex-col items-center gap-1 relative">
-                            <input type="checkbox" name="wishlist_colors" value="{{ color.id }}" data-name="{{ color.name }}" {% if color.image %}data-image="{{ color.image.url }}"{% endif %} class="peer" hidden required>
+                            <input type="checkbox" name="wishlist_colors" value="{{ color.id }}" data-name="{{ color.name }}" {% if color.image %}data-image="{{ color.image.url }}"{% endif %} data-admin="/admin/base/customizationcolorimage/{{ color.id }}/change/" class="peer" hidden required>
                             <span class="w-full h-full flex items-center justify-center overflow-hidden peer-checked:border-blue-800 relative" title="{{ color.name }}" style="position:relative;">
                                 {% if color.image %}
                                         <img src="{{ color.image.url }}" alt="{{ color.name }}" class="object-cover w-full h-full rounded-full color-thumb" style="max-width:90px;max-height:90px;" onclick="showColorModal('{{ color.image.url }}', '{{ color.name }}')">
@@ -142,7 +142,7 @@
                         {% for option in product.packaging_images.all %}
                          <div class="">
                         <label style="cursor:pointer;" class="flex flex-col items-center gap-1 relative">
-                            <input type="radio" name="wishlist_packs" value="{{ option.id }}" data-name="{{ option.name }}" {% if option.image and option.image.url %}data-image="{{ option.image.url }}"{% endif %} class="peer" hidden required>
+                            <input type="radio" name="wishlist_packs" value="{{ option.id }}" data-name="{{ option.name }}" {% if option.image and option.image.url %}data-image="{{ option.image.url }}"{% endif %} data-admin="/admin/base/customizationpackagingimage/{{ option.id }}/change/" class="peer" hidden required>
                             <span class="w-full h-full  flex items-center justify-center overflow-hidden peer-checked:border-blue-700 relative" title="{{ option.name }}" style="position:relative;">
                                 {% if option.image and option.image.url %}
                                     <img src="{{ option.image.url }}" alt="{{ option.name }}" class="object-cover w-full h-full rounded-lg pack-thumb" style="max-width:90px;max-height:90px;" onclick="showPackModal('{{ option.image.url }}', '{{ option.name }}')">
@@ -383,21 +383,23 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     btn.addEventListener('click', function() {
-        // Get selected color details (with image)
+        // Get selected color details (with image + admin link)
         let colorInputs = document.querySelectorAll('input[name="wishlist_colors"]:checked');
         let allColorInputs = document.querySelectorAll('input[name="wishlist_colors"]');
         let selectedColors = Array.from(colorInputs).map(i => ({
             id: i.value,
             name: i.getAttribute('data-name'),
-            image: i.getAttribute('data-image') || null
+            image: i.getAttribute('data-image') || null,
+            admin: i.getAttribute('data-admin') || null
         }));
-        // Get selected pack details (with image)
+        // Get selected pack details (with image + admin link)
         let packInputs = document.querySelectorAll('input[name="wishlist_packs"]:checked');
         let allPackInputs = document.querySelectorAll('input[name="wishlist_packs"]');
         let selectedPacks = Array.from(packInputs).map(i => ({
             id: i.value,
             name: i.getAttribute('data-name'),
-            image: i.getAttribute('data-image') || null
+            image: i.getAttribute('data-image') || null,
+            admin: i.getAttribute('data-admin') || null
         }));
 
         // Get selected perfume details
@@ -408,9 +410,9 @@ document.addEventListener('DOMContentLoaded', function() {
             name: i.getAttribute('data-name')
         }));
 
-        // Get selected function details
-        let functionInputs = document.querySelectorAll('input[name="wishlist_functions"]:checked');
-        let allFunctionInputs = document.querySelectorAll('input[name="wishlist_functions"]');
+        // Get selected function/details (product features). Note: feature inputs are named wishlist_features in template
+        let functionInputs = document.querySelectorAll('input[name="wishlist_features"]:checked');
+        let allFunctionInputs = document.querySelectorAll('input[name="wishlist_features"]');
         let selectedFunctions = Array.from(functionInputs).map(i => ({
             id: i.value,
             name: i.getAttribute('data-name')
@@ -447,6 +449,11 @@ document.addEventListener('DOMContentLoaded', function() {
         {% endif %}
         {% endwith %}
 
+        // Determine uploaded file name (if any) for admin display
+        let uploadedFileName = customSpecSheetFile ? customSpecSheetFile.name : (document.getElementById('artworkFileName')?.textContent || '');
+    // Read customization note
+    let customizationNote = document.getElementById('customizationNote') ? document.getElementById('customizationNote').value.trim() : '';
+
         // Build wishlist item
         let item = {
             id: Date.now(), // unique id for removal
@@ -462,7 +469,9 @@ document.addEventListener('DOMContentLoaded', function() {
             selected_functions: selectedFunctions,
             custom_color: customColorData,
             custom_packaging: customPackData,
-            custom_spec_sheet: customSpecSheetFile
+            custom_spec_sheet: customSpecSheetFile,
+            uploaded_file_name: uploadedFileName,
+            customization_note: customizationNote
         };
 
         // Get wishlist from localStorage

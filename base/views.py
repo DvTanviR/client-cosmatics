@@ -36,6 +36,10 @@ def SendQuote(request):
         custom_packaging_image = None
         spec_sheet_file = None
 
+        # If client sent a direct file upload (from quote modal), prefer it
+        if request.FILES.get('uploaded_file'):
+            spec_sheet_file = request.FILES.get('uploaded_file')
+
         # Find uploads in wishlist items (first found)
         for item in wishlist:
             # Custom color image (base64)
@@ -61,12 +65,14 @@ def SendQuote(request):
             # Spec sheet file (base64)
             spec_file = item.get('custom_spec_sheet')
             if spec_file and spec_file.get('data'):
-                file_data = spec_file['data']
-                if file_data.startswith('data:'):
-                    fmt, b64 = file_data.split(';base64,')
-                    ext = fmt.split('/')[-1]
-                    spec_sheet_file = ContentFile(base64.b64decode(b64), name=f'spec_sheet.{ext}')
-                break
+                # only use base64-derived file if we don't already have an uploaded_file
+                if not spec_sheet_file:
+                    file_data = spec_file['data']
+                    if file_data.startswith('data:'):
+                        fmt, b64 = file_data.split(';base64,')
+                        ext = fmt.split('/')[-1]
+                        spec_sheet_file = ContentFile(base64.b64decode(b64), name=f'spec_sheet.{ext}')
+                    break
 
         quote_obj = QuoteRequest.objects.create(
             name=name,
@@ -327,3 +333,35 @@ def CatagoryPage(request, category_id):
         'nav_structure': nav_structure,
     }
     return render(request, 'catagory.html', context)
+
+
+def NewsList(request):
+    """Render a list of news articles."""
+    main_categories = MainCategory.objects.prefetch_related('subcategories').all()
+    nav_structure = []
+    for main_cat in main_categories:
+        subs = main_cat.subcategories.all()
+        nav_structure.append({'main': main_cat, 'subs': subs})
+
+    articles = NewsArticle.objects.order_by('-published_date').all()
+    context = {
+        'nav_structure': nav_structure,
+        'articles': articles,
+    }
+    return render(request, 'news.html', context)
+
+
+def NewsDetail(request, pk):
+    """Render a single news article detail."""
+    main_categories = MainCategory.objects.prefetch_related('subcategories').all()
+    nav_structure = []
+    for main_cat in main_categories:
+        subs = main_cat.subcategories.all()
+        nav_structure.append({'main': main_cat, 'subs': subs})
+
+    article = NewsArticle.objects.get(pk=pk)
+    context = {
+        'nav_structure': nav_structure,
+        'article': article,
+    }
+    return render(request, 'news_detail.html', context)

@@ -146,12 +146,19 @@ else:
     MEDIA_URL = '/media/'
     MEDIA_ROOT = BASE_DIR / 'media'
 
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_USE_TLS = True
+# EMAIL_PORT = 587
+# EMAIL_HOST_USER = 'webfinge@gmail.com'
+# EMAIL_HOST_PASSWORD = 'sozvuyrxqbmoowqq'
+
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST = 'mail.beyondcosmetics.us'
 EMAIL_USE_TLS = True
-EMAIL_PORT = 587
-EMAIL_HOST_USER = 'webfinge@gmail.com'
-EMAIL_HOST_PASSWORD = 'sozvuyrxqbmoowqq'
+EMAIL_PORT = 465
+EMAIL_HOST_USER = 'sales@beyondcosmetics.us'
+EMAIL_HOST_PASSWORD = 'Bcsales@91733'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field

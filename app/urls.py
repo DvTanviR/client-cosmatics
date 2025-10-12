@@ -33,6 +33,8 @@ urlpatterns = [
     path('send-quote/', SendQuote, name="send_quote"),
     path('categories/<int:category_id>/', CatagoryPage, name="category_products"),
     path('ckeditor5/', include('django_ckeditor_5.urls')),
+    path('news/', NewsList, name='news_list'),
+    path('news/<int:pk>/', NewsDetail, name='news_detail'),
 ]
 
 if settings.DEBUG:
